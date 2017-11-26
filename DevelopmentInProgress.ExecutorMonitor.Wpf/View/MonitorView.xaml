@@ -4,7 +4,30 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:view="clr-namespace:DevelopmentInProgress.Origin.View;assembly=DevelopmentInProgress.Origin" 
+                       xmlns:messaging="clr-namespace:DevelopmentInProgress.WPFControls.Messaging;assembly=DipWpfControls"
                        mc:Ignorable="d" >
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Subscribe to Run" Grid.Row="0" Margin="5">
+            <DockPanel LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="Server URI:" Margin="5"/>
+                <TextBox DockPanel.Dock="Left" Text="{Binding ServerUri}" Margin="5" Width="200"/>
+                <Label DockPanel.Dock="Left" Content="Run Id:" Margin="5"/>
+                <TextBox DockPanel.Dock="Left" Text="{Binding RunId}" Margin="5" Width="50"/>
+                <Button DockPanel.Dock="Left" Content="Subscribe" Command="{Binding SubscribeCommand}" Margin="5"/>
+                <Button DockPanel.Dock="Left" Content="Run" Command="{Binding RunCommand}" Margin="5"/>
+                <Label/>
+            </DockPanel>
+        </GroupBox>
+        <messaging:MessagePanel Grid.Row="1" HeaderBackground="#B7CAE0"
+                                HeaderText="Notifications"
+                                Messages="{Binding Notifications}" 
+                                ClearMessages="{Binding ClearNotificationsCommand}" 
+                                IsExpanded="True"
+                                Margin="5"/>
     </Grid>
 </view:DocumentViewBase>
