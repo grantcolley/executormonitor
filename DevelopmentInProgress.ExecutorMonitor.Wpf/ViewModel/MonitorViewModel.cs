@@ -20,8 +20,8 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         public MonitorViewModel(ViewModelContext viewModelContext)
             : base(viewModelContext)
         {
-            RunCommand = new ViewModelCommand(Run);
             SubscribeCommand = new ViewModelCommand(Subscribe);
+            RunCommand = new ViewModelCommand(Run);
             ClearNotificationsCommand = new ViewModelCommand(ClearNotifications);
         }
 
@@ -73,10 +73,12 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             var step = GetRoot();
 
             var jsonContent = JsonConvert.SerializeObject(step);
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = await client.PostAsync(step.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await client.PostAsync(step.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+            }
         }
 
         private Step GetRoot()
