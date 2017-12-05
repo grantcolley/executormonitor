@@ -3,6 +3,7 @@ using DevelopmentInProgress.Origin.ViewModel;
 using DevelopmentInProgress.WPFControls.Messaging;
 using DipRunner;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Sockets;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Net.Http;
@@ -50,17 +51,28 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         {
             hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{ServerUri}/notificationhub?runid={RunId}")
+                .WithTransport(TransportType.WebSockets)
                 .Build();
 
-            await hubConnection.StartAsync();
-
-            hubConnection.On<string>("SendAsync", (message) =>
+            hubConnection.On<object>("Connected", message =>
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
-                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = message });
+                    notifications = new ObservableCollection<Message>();
+                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = message.ToString() });
                 });
             });
+
+            hubConnection.On<object>("Send", (message) =>
+            {
+                var str = "Hello";
+                ViewModelContext.UiDispatcher.Invoke(() =>
+                {
+                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = message.ToString() });
+                });
+            });
+
+            await hubConnection.StartAsync();
         }
 
         public void ClearNotifications(object param)
@@ -73,6 +85,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             var step = GetRoot();
 
             var jsonContent = JsonConvert.SerializeObject(step);
+            //await hubConnection.InvokeAsync("SendAsync", jsonContent);
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
