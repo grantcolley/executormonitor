@@ -6,13 +6,8 @@
                        xmlns:view="clr-namespace:DevelopmentInProgress.Origin.View;assembly=DevelopmentInProgress.Origin" 
                        xmlns:messaging="clr-namespace:DevelopmentInProgress.WPFControls.Messaging;assembly=DipWpfControls"
                        mc:Ignorable="d" >
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <GroupBox Header="Subscribe to Run" Grid.Row="0" Margin="5">
+    <DockPanel LastChildFill="True">
+        <GroupBox Header="Subscribe to Run" DockPanel.Dock="Top" Margin="5">
             <DockPanel LastChildFill="True">
                 <Label DockPanel.Dock="Left" Content="Server URI:" Margin="5"/>
                 <TextBox DockPanel.Dock="Left" Text="{Binding ServerUri}" Margin="5" Width="200"/>
@@ -23,11 +18,11 @@
                 <Label/>
             </DockPanel>
         </GroupBox>
-        <messaging:MessagePanel Grid.Row="1" HeaderBackground="#B7CAE0"
+        <messaging:MessagePanel HeaderBackground="Transparent"
                                 HeaderText="Notifications"
                                 Messages="{Binding Notifications}" 
                                 ClearMessages="{Binding ClearNotificationsCommand}" 
                                 IsExpanded="True"
                                 Margin="5"/>
-    </Grid>
+    </DockPanel>
 </view:DocumentViewBase>

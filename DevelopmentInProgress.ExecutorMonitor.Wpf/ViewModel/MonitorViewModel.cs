@@ -5,7 +5,10 @@ using DipRunner;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.Sockets;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -24,6 +27,11 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             SubscribeCommand = new ViewModelCommand(Subscribe);
             RunCommand = new ViewModelCommand(Run);
             ClearNotificationsCommand = new ViewModelCommand(ClearNotifications);
+
+            notifications = new ObservableCollection<Message>();
+
+            ServerUri = @"http://localhost:5000";
+            RunId = "101";
         }
 
         public ICommand RunCommand { get; set; }
@@ -58,17 +66,37 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
-                    notifications = new ObservableCollection<Message>();
-                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = message.ToString() });
+                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = $"{DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {message.ToString()}", Timestamp = DateTime.Now });
+                    OnPropertyChanged("Notifications");
                 });
             });
 
             hubConnection.On<object>("Send", (message) =>
             {
-                var str = "Hello";
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
-                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = message.ToString() });
+                    var stepNotifications = JsonConvert.DeserializeObject<IEnumerable<StepNotification>>(message.ToString()).ToList();
+                    foreach (var stepNotification in stepNotifications)
+                    {
+                        var msg = new Message
+                        {
+                            MessageType = MessageType.Info,
+                            Text = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.StepId} {stepNotification.StepName} {stepNotification.Message}",
+                            Timestamp = stepNotification.Timestamp,
+                            TextVerbose = stepNotification.ToString()
+                        };
+
+                        var indexedNotification = notifications.FirstOrDefault(n => n.Timestamp.Ticks > msg.Timestamp.Ticks);
+                        if (indexedNotification != null)
+                        {
+                            var index = Notifications.IndexOf(indexedNotification);
+                            Notifications.Insert(index, msg);
+                        }
+                        else
+                        {
+                            Notifications.Add(msg);
+                        }
+                    }
                 });
             });
 
@@ -85,7 +113,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             var step = GetRoot();
 
             var jsonContent = JsonConvert.SerializeObject(step);
-            //await hubConnection.InvokeAsync("SendAsync", jsonContent);
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();

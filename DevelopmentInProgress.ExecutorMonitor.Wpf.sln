@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevelopmentInProgress.Execu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DipRunner", "..\dipexecutor\src\DipRunner\DipRunner.csproj", "{BD1ED47F-3870-429F-83CC-3BF0939939FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevelopmentInProgress.WPFControls", "..\wpfcontrols\DevelopmentInProgress.WPFControls\DevelopmentInProgress.WPFControls.csproj", "{5ACDC574-0F6F-48BC-AD2A-2F29BD7009FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BD1ED47F-3870-429F-83CC-3BF0939939FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD1ED47F-3870-429F-83CC-3BF0939939FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD1ED47F-3870-429F-83CC-3BF0939939FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACDC574-0F6F-48BC-AD2A-2F29BD7009FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACDC574-0F6F-48BC-AD2A-2F29BD7009FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACDC574-0F6F-48BC-AD2A-2F29BD7009FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACDC574-0F6F-48BC-AD2A-2F29BD7009FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

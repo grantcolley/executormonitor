@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DipWpfControls, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DipWpfControls.2.1.0.0\lib\DipWpfControls.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.0.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>
@@ -224,6 +221,10 @@
     <ProjectReference Include="..\..\origin\Projects\DevelopmentInProgress.Origin\DevelopmentInProgress.Origin.csproj">
       <Project>{7bce5d35-0443-4031-843a-3563356290e1}</Project>
       <Name>DevelopmentInProgress.Origin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\wpfcontrols\DevelopmentInProgress.WPFControls\DevelopmentInProgress.WPFControls.csproj">
+      <Project>{5acdc574-0f6f-48bc-ad2a-2f29bd7009fe}</Project>
+      <Name>DevelopmentInProgress.WPFControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
