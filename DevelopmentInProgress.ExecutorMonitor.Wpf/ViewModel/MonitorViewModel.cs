@@ -57,6 +57,8 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         private async void Subscribe(object param)
         {
+            ClearNotifications(null);
+
             hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{ServerUri}/notificationhub?runid={RunId}")
                 .WithTransport(TransportType.WebSockets)
@@ -66,8 +68,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
-                    Notifications.Add(new Message { MessageType = MessageType.Info, Text = $"{DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {message.ToString()}", Timestamp = DateTime.Now });
-                    OnPropertyChanged("Notifications");
+                    OnConnected(new Message { MessageType = MessageType.Info, Text = $"{DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {message.ToString()}", Timestamp = DateTime.Now });
                 });
             });
 
@@ -75,37 +76,55 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
-                    var stepNotifications = JsonConvert.DeserializeObject<IEnumerable<StepNotification>>(message.ToString()).ToList();
-                    foreach (var stepNotification in stepNotifications)
-                    {
-                        var msg = new Message
-                        {
-                            MessageType = MessageType.Info,
-                            Text = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.StepId} {stepNotification.StepName} {stepNotification.Message}",
-                            Timestamp = stepNotification.Timestamp,
-                            TextVerbose = stepNotification.ToString()
-                        };
-
-                        var indexedNotification = notifications.FirstOrDefault(n => n.Timestamp.Ticks > msg.Timestamp.Ticks);
-                        if (indexedNotification != null)
-                        {
-                            var index = Notifications.IndexOf(indexedNotification);
-                            Notifications.Insert(index, msg);
-                        }
-                        else
-                        {
-                            Notifications.Add(msg);
-                        }
-                    }
+                    OnNotificationRecieved(message);
                 });
             });
 
-            await hubConnection.StartAsync();
+            try
+            {
+                await hubConnection.StartAsync();
+            }
+            catch(Exception ex)
+            {
+                OnConnected(new Message { MessageType = MessageType.Error, Text = $"{DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} Failed to connect", Timestamp = DateTime.Now });
+            }
         }
 
         public void ClearNotifications(object param)
         {
             Notifications.Clear();
+        }
+
+        private void OnConnected(Message message)
+        {
+            Notifications.Add(message);
+            OnPropertyChanged("Notifications");
+        }
+
+        private void OnNotificationRecieved(object message)
+        {
+            var stepNotifications = JsonConvert.DeserializeObject<IEnumerable<StepNotification>>(message.ToString()).ToList();
+            foreach (var stepNotification in stepNotifications)
+            {
+                var msg = new Message
+                {
+                    MessageType = NotificationLevelToMessageTypeConverter(stepNotification.NotificationLevel),
+                    Text = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.StepId} {stepNotification.StepName} {stepNotification.Status} {stepNotification.Message}",
+                    Timestamp = stepNotification.Timestamp,
+                    TextVerbose = stepNotification.ToString()
+                };
+
+                var indexedNotification = notifications.FirstOrDefault(n => n.Timestamp.Ticks > msg.Timestamp.Ticks);
+                if (indexedNotification != null)
+                {
+                    var index = Notifications.IndexOf(indexedNotification);
+                    Notifications.Insert(index, msg);
+                }
+                else
+                {
+                    Notifications.Add(msg);
+                }
+            }
         }
 
         private async void Run(object param)
@@ -118,6 +137,19 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var response = await client.PostAsync(step.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+            }
+        }
+
+        private MessageType NotificationLevelToMessageTypeConverter(NotificationLevel notificationLevel)
+        {
+            switch (notificationLevel)
+            {
+                case NotificationLevel.Error:
+                    return MessageType.Error;
+                case NotificationLevel.Warning:
+                    return MessageType.Warn;
+                default:
+                    return MessageType.Info;
             }
         }
 

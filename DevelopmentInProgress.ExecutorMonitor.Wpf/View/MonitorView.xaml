@@ -23,6 +23,8 @@
                                 Messages="{Binding Notifications}" 
                                 ClearMessages="{Binding ClearNotificationsCommand}" 
                                 IsExpanded="True"
+                                ShowMessageTextAreaMaxWidth ="1000"
+                                ShowMessageTextAlignment="Left"
                                 Margin="5"/>
     </DockPanel>
 </view:DocumentViewBase>
