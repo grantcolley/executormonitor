@@ -5,26 +5,72 @@
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:view="clr-namespace:DevelopmentInProgress.Origin.View;assembly=DevelopmentInProgress.Origin" 
                        xmlns:messaging="clr-namespace:DevelopmentInProgress.WPFControls.Messaging;assembly=DipWpfControls"
+                       xmlns:converters="clr-namespace:DevelopmentInProgress.Origin.Converters;assembly=DevelopmentInProgress.Origin"
+                       xmlns:local="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Model"
                        mc:Ignorable="d" >
+    <view:DocumentViewBase.Resources>
+        
+        <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+
+        <!--<HierarchicalDataTemplate DataType="{x:Type local:RunStep}" 
+                                              ItemsSource="{Binding Roles}">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}">
+                <Image Source="../Images/User.png" 
+                       ToolTip="{Binding ToString}" Margin="2" MaxHeight="20" MaxWidth="20" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Text}" Margin="2" VerticalAlignment="Center"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>-->
+        
+    </view:DocumentViewBase.Resources>
     <DockPanel LastChildFill="True">
         <GroupBox Header="Subscribe to Run" DockPanel.Dock="Top" Margin="5">
             <DockPanel LastChildFill="True">
-                <Label DockPanel.Dock="Left" Content="Server URI:" Margin="5"/>
-                <TextBox DockPanel.Dock="Left" Text="{Binding ServerUri}" Margin="5" Width="200"/>
-                <Label DockPanel.Dock="Left" Content="Run Id:" Margin="5"/>
-                <TextBox DockPanel.Dock="Left" Text="{Binding RunId}" Margin="5" Width="50"/>
-                <Button DockPanel.Dock="Left" Content="Subscribe" Command="{Binding SubscribeCommand}" Margin="5"/>
-                <Button DockPanel.Dock="Left" Content="Run" Command="{Binding RunCommand}" Margin="5"/>
+                <ComboBox DockPanel.Dock="Left" Margin="5" Width="150"
+                          ItemsSource="{Binding Runs}"
+                          DisplayMemberPath="RunName"
+                          SelectedValuePath="RunId"
+                          SelectedItem="{Binding SelectedRun}">
+                </ComboBox>
+                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
+                        Command="{Binding MonitorCommand}"
+                        ToolTip="Monitor Run"
+                        Visibility="{Binding IsMonitorEnabled, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/monitorrun.png"/>
+                </Button>
+                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
+                        ToolTip="Execute Run"
+                        Command="{Binding ExecuteRunCommand}"
+                        Visibility="{Binding IsExecuteRunEnabled, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/executerun.png"/>                    
+                </Button>
                 <Label/>
             </DockPanel>
         </GroupBox>
-        <messaging:MessagePanel HeaderBackground="Transparent"
-                                HeaderText="Notifications"
-                                Messages="{Binding Notifications}" 
-                                ClearMessages="{Binding ClearNotificationsCommand}" 
-                                IsExpanded="True"
-                                ShowMessageTextAreaMaxWidth ="1000"
-                                ShowMessageTextAlignment="Left"
-                                Margin="5"/>
-    </DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0" Header="Run Steps" Margin="5">
+                <TreeView ItemsSource="{Binding Steps}"
+                          BorderBrush="Transparent"
+                          BorderThickness="0"
+                          Margin="5"
+                          Padding="5"/>
+            </GroupBox>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+            <GroupBox Grid.Column="2" Header="Run Log" Margin="5">
+                <messaging:MessagePanel                 
+                    HeaderBackground="Transparent"
+                    HeaderText="Notifications"
+                    Messages="{Binding Notifications}" 
+                    ClearMessages="{Binding ClearNotificationsCommand}" 
+                    IsExpanded="True"
+                    ShowMessageTextAreaMaxWidth ="1000"
+                    ShowMessageTextAlignment="Left"
+                    Margin="5"/>
+            </GroupBox>
+        </Grid>
+        </DockPanel>
 </view:DocumentViewBase>

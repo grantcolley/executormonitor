@@ -33,7 +33,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf
             newDocument.ModuleGroupItemName = "Distributor";
             newDocument.TargetView = typeof(MonitorView).Name;
             newDocument.TargetViewTitle = "Distributor";
-            newDocument.ModuleGroupItemImagePath = @"/DevelopmentInProgress.ExecutorMonitor.Wpf;component/Images/distributor.png";
+            newDocument.ModuleGroupItemImagePath = @"/DevelopmentInProgress.ExecutorMonitor.Wpf;component/Images/runmanager.png";
 
             moduleGroup.ModuleGroupItems.Add(newDocument);
             moduleSettings.ModuleGroups.Add(moduleGroup);
