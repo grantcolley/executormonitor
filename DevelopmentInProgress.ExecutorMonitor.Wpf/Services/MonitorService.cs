@@ -11,18 +11,18 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
         {
             var tcs = new TaskCompletionSource<List<Run>>();
             var run = new Run { RunId = 101, RunName = "Test Run", NotificationUrl = "http://localhost:5000" };
-            var step = GetRun(run.RunId);
+            var step = GetRunSteps(run.RunId, run.RunName);
             run.Step = step;
             var runs = new List<Run>() { run };
             tcs.SetResult(runs);
             return tcs.Task;
         }
 
-        private Step GetRun(int runId)
+        private RunStep GetRunSteps(int runId, string runName)
         {
-            var step1 = new Step();
-            step1.RunId = 101;
-            step1.RunName = "Test Run 1";
+            var step1 = new RunStep();
+            step1.RunId = runId;
+            step1.RunName = runName;
             step1.StepId = 1;
             step1.StepName = "Step 1";
             step1.TargetAssembly = "TestLibrary.dll";
@@ -36,9 +36,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step21 = new Step();
-            step21.RunId = 101;
-            step21.RunName = "Test Run 1";
+            var step21 = new RunStep();
+            step21.RunId = runId;
+            step21.RunName = runName;
             step21.StepId = 21;
             step21.StepName = "Step 2.1";
             step21.TargetAssembly = "TestLibrary.dll";
@@ -51,9 +51,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step22 = new Step();
-            step22.RunId = 101;
-            step22.RunName = "Test Run 1";
+            var step22 = new RunStep();
+            step22.RunId = runId;
+            step22.RunName = runName;
             step22.StepId = 22;
             step22.StepName = "Step 2.2";
             step22.TargetAssembly = "TestLibrary.dll";
@@ -66,9 +66,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step23 = new Step();
-            step23.RunId = 101;
-            step23.RunName = "Test Run 1";
+            var step23 = new RunStep();
+            step23.RunId = runId;
+            step23.RunName = runName;
             step23.StepId = 23;
             step23.StepName = "Step 2.3";
             step23.TargetAssembly = "TestLibrary.dll";
@@ -81,9 +81,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step3 = new Step();
-            step3.RunId = 101;
-            step3.RunName = "Test Run 1";
+            var step3 = new RunStep();
+            step3.RunId = runId;
+            step3.RunName = runName;
             step3.StepId = 3;
             step3.StepName = "Step 3";
             step3.TargetAssembly = "TestLibrary.dll";
@@ -96,9 +96,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step31 = new Step();
-            step31.RunId = 101;
-            step31.RunName = "Test Run 1";
+            var step31 = new RunStep();
+            step31.RunId = runId;
+            step31.RunName = runName;
             step31.StepId = 31;
             step31.StepName = "Step 3.1";
             step31.TargetAssembly = "TestLibrary.dll";
@@ -111,9 +111,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step4 = new Step();
-            step4.RunId = 101;
-            step4.RunName = "Test Run 1";
+            var step4 = new RunStep();
+            step4.RunId = runId;
+            step4.RunName = runName;
             step4.StepId = 4;
             step4.StepName = "Step 4";
             step4.TargetAssembly = "TestLibrary.dll";
@@ -126,11 +126,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            step1.SubSteps = new[] { step21, step22, step23 };
+            step1.Children = new List<RunStep> { step21, step22, step23 };
 
-            step3.SubSteps = new[] { step31 };
+            step3.Children = new List<RunStep> { step31 };
 
-            step1.TransitionSteps = new[] { step3, step4 };
+            step1.Children.Add(step3);
+
+            step1.Children.Add(step4);
 
             return step1;
         }

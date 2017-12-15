@@ -44,16 +44,16 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         public ICommand ClearNotificationsCommand { get; set; }
         public List<Run> Runs { get; set; }
 
-        public List<Step> Steps
+        public List<RunStep> Steps
         {
             get
             {
                 if (SelectedRun == null)
                 {
-                    return new List<Step>();
+                    return new List<RunStep>();
                 }
 
-                return new List<Step>() { selectedRun.Step };
+                return new List<RunStep>() { selectedRun.Step };
             }
         }
 

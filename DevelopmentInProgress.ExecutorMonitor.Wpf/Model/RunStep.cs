@@ -1,18 +1,16 @@
-﻿using DevelopmentInProgress.DipCore;
-using DipRunner;
+﻿using DipRunner;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
 {
-    public class RunStep : EntityBase
+    public class RunStep : Step, INotifyPropertyChanged
     {
         private string message;
 
-        public RunStep(Step step)
-        {
-            Step = step;
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public Step Step { get; private set; }
+        public List<RunStep> Children { get; set; }
 
         public string Message
         {
@@ -24,6 +22,20 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
                     message = value;
                     OnPropertyChanged("Message");
                 }
+            }
+        }
+
+        public string ToolTip
+        {
+            get;
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            var propertyChangedHandler = PropertyChanged;
+            if (propertyChangedHandler != null)
+            {
+                propertyChangedHandler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

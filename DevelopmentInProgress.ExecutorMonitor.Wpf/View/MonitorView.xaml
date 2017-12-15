@@ -12,14 +12,18 @@
         
         <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
 
-        <!--<HierarchicalDataTemplate DataType="{x:Type local:RunStep}" 
-                                              ItemsSource="{Binding Roles}">
-            <StackPanel Orientation="Horizontal" Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}">
-                <Image Source="../Images/User.png" 
-                       ToolTip="{Binding ToString}" Margin="2" MaxHeight="20" MaxWidth="20" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Text}" Margin="2" VerticalAlignment="Center"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>-->
+        <HierarchicalDataTemplate DataType="{x:Type local:RunStep}" 
+                                              ItemsSource="{Binding Children}">
+            <DockPanel LastChildFill="True">
+                <Image DockPanel.Dock="Left" 
+                       Source="../Images/User.png"
+                       Margin="2" MaxHeight="20" MaxWidth="20" VerticalAlignment="Center"
+                       ToolTip="{Binding ToolTip}"/>
+                <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
+                <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Message}" Margin="2" VerticalAlignment="Center"/>
+            </DockPanel>
+        </HierarchicalDataTemplate>
         
     </view:DocumentViewBase.Resources>
     <DockPanel LastChildFill="True">
