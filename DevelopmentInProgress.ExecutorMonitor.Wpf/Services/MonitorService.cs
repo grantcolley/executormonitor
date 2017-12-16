@@ -20,7 +20,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
 
         private RunStep GetRunSteps(int runId, string runName)
         {
-            var step1 = new RunStep();
+            var step1 = new Step();
             step1.RunId = runId;
             step1.RunName = runName;
             step1.StepId = 1;
@@ -36,7 +36,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step21 = new RunStep();
+            var step2 = new Step();
+            step2.RunId = runId;
+            step2.RunName = runName;
+            step2.StepId = 2;
+            step2.StepName = "Step 2";
+
+            var step21 = new Step();
             step21.RunId = runId;
             step21.RunName = runName;
             step21.StepId = 21;
@@ -51,7 +57,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step22 = new RunStep();
+            var step22 = new Step();
             step22.RunId = runId;
             step22.RunName = runName;
             step22.StepId = 22;
@@ -66,7 +72,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step23 = new RunStep();
+            var step23 = new Step();
             step23.RunId = runId;
             step23.RunName = runName;
             step23.StepId = 23;
@@ -81,7 +87,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step3 = new RunStep();
+            var step3 = new Step();
             step3.RunId = runId;
             step3.RunName = runName;
             step3.StepId = 3;
@@ -96,7 +102,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step31 = new RunStep();
+            var step31 = new Step();
             step31.RunId = runId;
             step31.RunName = runName;
             step31.StepId = 31;
@@ -111,7 +117,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step4 = new RunStep();
+            var step4 = new Step();
             step4.RunId = runId;
             step4.RunName = runName;
             step4.StepId = 4;
@@ -126,15 +132,28 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            step1.Children = new List<RunStep> { step21, step22, step23 };
+            step1.TransitionSteps = new Step[] { step2 };
+            step2.SubSteps = new Step[] { step21, step22, step23 };
+            step2.TransitionSteps = new Step[] { step3 };
+            step3.SubSteps = new Step[] { step31 };
+            step3.TransitionSteps = new Step[] { step4 };
 
-            step3.Children = new List<RunStep> { step31 };
+            var runStep1 = new RunStep(step1);
+            var runStep2 = new RunStep(step2);
+            var runStep21 = new RunStep(step21);
+            var runStep22 = new RunStep(step22);
+            var runStep23 = new RunStep(step23);
+            var runStep3 = new RunStep(step3);
+            var runStep31 = new RunStep(step31);
+            var runStep4 = new RunStep(step4);
 
-            step1.Children.Add(step3);
+            runStep1.TransitionSteps.Add(runStep2);
+            runStep2.SubSteps.AddRange(new[] { runStep21, runStep22, runStep23 });
+            runStep2.TransitionSteps.Add(runStep3);
+            runStep3.SubSteps.Add(runStep31);
+            runStep3.TransitionSteps.Add(runStep4);
 
-            step1.Children.Add(step4);
-
-            return step1;
+            return runStep1;
         }
     }
 }

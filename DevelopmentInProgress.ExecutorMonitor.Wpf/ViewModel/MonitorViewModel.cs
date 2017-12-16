@@ -1,4 +1,5 @@
-﻿using DevelopmentInProgress.ExecutorMonitor.Wpf.Model;
+﻿using DevelopmentInProgress.DipCore;
+using DevelopmentInProgress.ExecutorMonitor.Wpf.Model;
 using DevelopmentInProgress.ExecutorMonitor.Wpf.Services;
 using DevelopmentInProgress.Origin.Context;
 using DevelopmentInProgress.Origin.ViewModel;
@@ -26,6 +27,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         private Run selectedRun;
         private bool isMonitorEnabled;
         private bool isExecuteRunEnabled;
+        private List<RunStep> notificationSteps;
 
         public MonitorViewModel(ViewModelContext viewModelContext, MonitorService monitorService)
             : base(viewModelContext)
@@ -55,6 +57,11 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
                 return new List<RunStep>() { selectedRun.Step };
             }
+        }
+
+        public ObservableCollection<Message> Notifications
+        {
+            get { return notifications; }
         }
 
         public Run SelectedRun
@@ -99,11 +106,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                     OnPropertyChanged("IsMonitorEnabled");
                 }
             }
-        }
-
-        public ObservableCollection<Message> Notifications
-        {
-            get { return notifications; }
         }
 
         protected async override void OnPublished(object data)
@@ -152,6 +154,8 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             try
             {
                 await hubConnection.StartAsync();
+
+                notificationSteps = Runs.Flatten<RunStep>(r => r.RunId.Equals(SelectedRun.RunId)).ToList();
             }
             catch(Exception ex)
             {
@@ -176,6 +180,10 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             var stepNotifications = JsonConvert.DeserializeObject<IEnumerable<StepNotification>>(message.ToString()).ToList();
             foreach (var stepNotification in stepNotifications)
             {
+                var step = notificationSteps.First(s=>s.StepId.Equals(stepNotification.StepId));
+                step.Status = stepNotification.Status;
+                step.Message = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.Message}";
+
                 var msg = new Message
                 {
                     MessageType = NotificationLevelToMessageTypeConverter(stepNotification.NotificationLevel),
