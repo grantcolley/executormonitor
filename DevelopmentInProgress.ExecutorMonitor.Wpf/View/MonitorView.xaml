@@ -19,7 +19,6 @@
         <localconverters:StepStatusInactiveToVisibilityConverter x:Key="stepStatusInactiveToVisibilityConverter"/>
         <localconverters:StepStatusProgressToVisibilityConverter x:Key="stepStatusProgressToVisibilityConverter"/>
         <localconverters:StepStatusProgressColourConverter x:Key="stepStatusProgressColourConverter"/>
-        <localconverters:StepStatusProgressToolTipConverter x:Key="stepStatusProgressToolTipConverter"/>
 
         <HierarchicalDataTemplate DataType="{x:Type model:RunStep}">
             <StackPanel>
