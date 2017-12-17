@@ -31,8 +31,7 @@
                                  Visibility="{Binding Status, Converter={StaticResource stepStatusInactiveToVisibilityConverter}}"/>
                         <Viewbox DockPanel.Dock="Left" Width="20" Height="20" Margin="2"
                                  Visibility="{Binding Status, Converter={StaticResource stepStatusProgressToVisibilityConverter}}">
-                        <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"
-                                                   ToolTip="{Binding Status, Converter={StaticResource stepStatusProgressToolTipConverter}}"/>
+                        <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"/>
                         </Viewbox>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
