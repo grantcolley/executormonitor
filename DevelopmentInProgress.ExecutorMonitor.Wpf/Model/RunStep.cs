@@ -21,9 +21,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
             get { return step.RunId; }
         }
 
-        public string StepId
+        public int StepId
         {
-            get { return step.StepId.ToString(); }
+            get { return step.StepId; }
         }
 
         public string StepName

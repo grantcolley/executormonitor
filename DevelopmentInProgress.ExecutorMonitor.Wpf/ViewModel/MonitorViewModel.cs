@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
@@ -27,7 +28,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         private Run selectedRun;
         private bool isMonitorEnabled;
         private bool isExecuteRunEnabled;
-        private List<RunStep> notificationSteps;
+        private IList<RunStep> notificationSteps;
 
         public MonitorViewModel(ViewModelContext viewModelContext, MonitorService monitorService)
             : base(viewModelContext)
@@ -45,19 +46,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         public ICommand MonitorCommand { get; set; }
         public ICommand ClearNotificationsCommand { get; set; }
         public List<Run> Runs { get; set; }
-
-        public List<RunStep> Steps
-        {
-            get
-            {
-                if (SelectedRun == null)
-                {
-                    return new List<RunStep>();
-                }
-
-                return new List<RunStep>() { selectedRun.Step };
-            }
-        }
 
         public ObservableCollection<Message> Notifications
         {
@@ -121,13 +109,18 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         private async void Monitor(object param)
         {
+            await Monitor();
+        }
+
+        private async Task<bool> Monitor()
+        {
             ClearNotifications(null);
             ClearMessages();
 
             if (SelectedRun == null)
             {
                 ShowMessage(new Message { MessageType = MessageType.Info, Text = "Select a Run to minitor" });
-                return;
+                return false;
             }
 
             hubConnection = new HubConnectionBuilder()
@@ -155,7 +148,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 await hubConnection.StartAsync();
 
-                notificationSteps = Runs.Flatten<RunStep>(r => r.RunId.Equals(SelectedRun.RunId)).ToList();
+                notificationSteps = SelectedRun.RunStep.Flatten<RunStep>(r => r.RunId.Equals(SelectedRun.RunId)).ToList();
+
+                return true;
             }
             catch(Exception ex)
             {
@@ -207,22 +202,19 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         private async void ExecuteRun(object param)
         {
-            if (SelectedRun == null)
-            {
-                ShowMessage(new Message { MessageType = MessageType.Info, Text = "Select a Run to minitor" });
-                return;
-            }
-
             try
             {
-                Monitor(SelectedRun);
+                var result = await Monitor();
 
-                var jsonContent = JsonConvert.SerializeObject(SelectedRun.Step);
-                using (var client = new HttpClient())
+                if (result)
                 {
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    var response = await client.PostAsync(SelectedRun.Step.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+                    var jsonContent = JsonConvert.SerializeObject(SelectedRun.RunStep.Step);
+                    using (var client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        var response = await client.PostAsync(SelectedRun.RunStep.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+                    }
                 }
             }
             catch(Exception ex)

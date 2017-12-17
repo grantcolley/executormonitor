@@ -5,6 +5,7 @@
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:view="clr-namespace:DevelopmentInProgress.Origin.View;assembly=DevelopmentInProgress.Origin" 
                        xmlns:messaging="clr-namespace:DevelopmentInProgress.WPFControls.Messaging;assembly=DipWpfControls"
+                       xmlns:progress="clr-namespace:DevelopmentInProgress.WPFControls.Progress;assembly=DipWpfControls"
                        xmlns:converters="clr-namespace:DevelopmentInProgress.Origin.Converters;assembly=DevelopmentInProgress.Origin"
                        xmlns:model="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Model"
                        xmlns:localconverters="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Converters"
@@ -15,13 +16,24 @@
         <localconverters:StepStatusFillColourConverter x:Key="stepStatusFillColourConverter"/>
         <localconverters:StepStatusStrokeColourConverter x:Key="stepStatusStrokeColourConverter"/>
 
+        <localconverters:StepStatusInactiveToVisibilityConverter x:Key="stepStatusInactiveToVisibilityConverter"/>
+        <localconverters:StepStatusProgressToVisibilityConverter x:Key="stepStatusProgressToVisibilityConverter"/>
+        <localconverters:StepStatusProgressColourConverter x:Key="stepStatusProgressColourConverter"/>
+        <localconverters:StepStatusProgressToolTipConverter x:Key="stepStatusProgressToolTipConverter"/>
+
         <HierarchicalDataTemplate DataType="{x:Type model:RunStep}">
             <StackPanel>
                 <ContentControl ToolTip="{Binding ToolTip}">
                     <DockPanel LastChildFill="True">
-                        <Ellipse DockPanel.Dock="Left" Width="20" Height="20" Margin="2" StrokeThickness="2"
-                                    Fill="{Binding Status, Converter={StaticResource stepStatusFillColourConverter}}" 
-                                    Stroke="{Binding Status, Converter={StaticResource stepStatusStrokeColourConverter}}"/>
+                        <Ellipse DockPanel.Dock="Left" Width="20" Height="20" Margin="2" StrokeThickness="3"
+                                 Fill="{Binding Status, Converter={StaticResource stepStatusFillColourConverter}}" 
+                                 Stroke="{Binding Status, Converter={StaticResource stepStatusStrokeColourConverter}}"
+                                 Visibility="{Binding Status, Converter={StaticResource stepStatusInactiveToVisibilityConverter}}"/>
+                        <Viewbox DockPanel.Dock="Left" Width="20" Height="20" Margin="2"
+                                 Visibility="{Binding Status, Converter={StaticResource stepStatusProgressToVisibilityConverter}}">
+                        <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"
+                                                   ToolTip="{Binding Status, Converter={StaticResource stepStatusProgressToolTipConverter}}"/>
+                        </Viewbox>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding Message}" Margin="2" VerticalAlignment="Center"/>
@@ -67,7 +79,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <GroupBox Grid.Column="0" Header="Run Steps" Margin="5">
-                <ItemsControl ItemsSource="{Binding Steps}"/>
+                <ContentControl Content="{Binding SelectedRun.RunStep}"/>
             </GroupBox>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
             <GroupBox Grid.Column="2" Header="Run Log" Margin="5">

@@ -5,6 +5,6 @@
         public int RunId { get; set; }
         public string RunName { get; set; }
         public string NotificationUrl{get;set;}
-        public RunStep Step { get; set; }
+        public RunStep RunStep { get; set; }
     }
 }

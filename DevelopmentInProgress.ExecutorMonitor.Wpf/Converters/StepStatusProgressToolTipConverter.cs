@@ -2,29 +2,27 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Converters
 {
-    public class StepStatusFillColourConverter : IValueConverter
+    public class StepStatusProgressToolTipConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType,
-                      object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var status = (StepStatus)value;
 
             switch (status)
             {
-                case StepStatus.NotStarted:
-                    return new SolidColorBrush(Colors.LightGray);
                 case StepStatus.Initialise:
-                    return new SolidColorBrush(Colors.Yellow);
+                    return "Initialising...";
                 case StepStatus.InProgress:
-                    return new SolidColorBrush(Colors.LightGreen);
+                    return "In progress...";
+                case StepStatus.NotStarted:
+                    return "Not started";
                 case StepStatus.Complete:
-                    return new SolidColorBrush(Colors.RoyalBlue);
+                    return "Complete";
                 case StepStatus.Error:
-                    return new SolidColorBrush(Colors.Red);
+                    return "Error";
                 default:
                     throw new NotImplementedException($"Status {status}");
             }

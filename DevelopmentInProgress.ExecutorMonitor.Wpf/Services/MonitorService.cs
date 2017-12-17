@@ -12,7 +12,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             var tcs = new TaskCompletionSource<List<Run>>();
             var run = new Run { RunId = 101, RunName = "Test Run", NotificationUrl = "http://localhost:5000" };
             var step = GetRunSteps(run.RunId, run.RunName);
-            run.Step = step;
+            run.RunStep = step;
             var runs = new List<Run>() { run };
             tcs.SetResult(runs);
             return tcs.Task;

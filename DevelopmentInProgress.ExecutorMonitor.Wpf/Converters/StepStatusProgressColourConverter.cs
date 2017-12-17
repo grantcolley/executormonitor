@@ -6,21 +6,20 @@ using System.Windows.Media;
 
 namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Converters
 {
-    public class StepStatusFillColourConverter : IValueConverter
+    public class StepStatusProgressColourConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType,
-                      object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var status = (StepStatus)value;
 
             switch (status)
             {
-                case StepStatus.NotStarted:
-                    return new SolidColorBrush(Colors.LightGray);
                 case StepStatus.Initialise:
-                    return new SolidColorBrush(Colors.Yellow);
+                    return new SolidColorBrush(Colors.Gold);
                 case StepStatus.InProgress:
-                    return new SolidColorBrush(Colors.LightGreen);
+                    return new SolidColorBrush(Colors.Green);
+                case StepStatus.NotStarted:
+                    return new SolidColorBrush(Colors.Gray);
                 case StepStatus.Complete:
                     return new SolidColorBrush(Colors.RoyalBlue);
                 case StepStatus.Error:

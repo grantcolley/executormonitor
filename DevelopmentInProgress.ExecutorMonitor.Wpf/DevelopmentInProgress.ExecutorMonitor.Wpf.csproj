@@ -206,7 +206,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\StepStatusProgressToVisibilityConverter.cs" />
+    <Compile Include="Converters\StepStatusInactiveToVisibilityConverter.cs" />
     <Compile Include="Converters\StepStatusFillColourConverter.cs" />
+    <Compile Include="Converters\StepStatusProgressColourConverter.cs" />
+    <Compile Include="Converters\StepStatusProgressToolTipConverter.cs" />
     <Compile Include="Converters\StepStatusStrokeColourConverter.cs" />
     <Compile Include="Model\Run.cs" />
     <Compile Include="Model\RunStep.cs" />
