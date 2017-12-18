@@ -28,6 +28,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         private Run selectedRun;
         private bool isMonitorEnabled;
         private bool isExecuteRunEnabled;
+        private bool hasSubscribed;
         private IList<RunStep> notificationSteps;
 
         public MonitorViewModel(ViewModelContext viewModelContext, MonitorService monitorService)
@@ -96,10 +97,35 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             }
         }
 
+        public bool HasNotSubscribed
+        {
+            get { return !hasSubscribed; }
+        }
+
+        public bool HasSubscribed
+        {
+            get { return hasSubscribed; }
+            set
+            {
+                if (hasSubscribed != value)
+                {
+                    hasSubscribed = value;
+                    if(hasSubscribed)
+                    {
+                        IsMonitorEnabled = false;
+                        IsExecuteRunEnabled = false;
+                    }
+
+                    OnPropertyChanged("HasSubscribed");
+                    OnPropertyChanged("HasNotSubscribed");
+                }
+            }
+        }
+
         protected async override void OnPublished(object data)
         {
             Runs = await monitorService.GetRuns();
-            SelectedRun = null;
+            Reset();
         }
 
         protected async override void SaveDocument()
@@ -114,9 +140,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         private async Task<bool> Monitor()
         {
-            ClearNotifications(null);
-            ClearMessages();
-
             if (SelectedRun == null)
             {
                 ShowMessage(new Message { MessageType = MessageType.Info, Text = "Select a Run to minitor" });
@@ -150,7 +173,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
                 notificationSteps = SelectedRun.RunStep.Flatten<RunStep>(r => r.RunId.Equals(SelectedRun.RunId)).ToList();
 
-                return true;
+                HasSubscribed = true;
+
+                return HasSubscribed;
             }
             catch(Exception ex)
             {
@@ -161,7 +186,15 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         public void ClearNotifications(object param)
         {
+            Reset();
+        }
+
+        private void Reset()
+        {
+            SelectedRun = null;
+            HasSubscribed = false;
             Notifications.Clear();
+            ClearMessages();
         }
 
         private void OnConnected(Message message)
