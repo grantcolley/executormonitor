@@ -16,13 +16,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Converters
             switch (status)
             {
                 case StepStatus.NotStarted:
-                    return new SolidColorBrush(Colors.Gray);
+                    return new SolidColorBrush(Colors.DarkGray);
                 case StepStatus.Initialise:
                     return new SolidColorBrush(Colors.Gold);
                 case StepStatus.InProgress:
                     return new SolidColorBrush(Colors.MediumSeaGreen);
                 case StepStatus.Complete:
-                    return new SolidColorBrush(Colors.Navy);
+                    return new SolidColorBrush(Colors.CornflowerBlue);
                 case StepStatus.Error:
                     return new SolidColorBrush(Colors.DarkRed);
                 default:

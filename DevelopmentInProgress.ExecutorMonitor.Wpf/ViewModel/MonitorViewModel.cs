@@ -36,6 +36,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         {
             MonitorCommand = new ViewModelCommand(Monitor);
             ExecuteRunCommand = new ViewModelCommand(ExecuteRun);
+            DisconnectCommand = new ViewModelCommand(Disconnect);
             ClearNotificationsCommand = new ViewModelCommand(ClearNotifications);
 
             notifications = new ObservableCollection<Message>();
@@ -45,6 +46,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         public ICommand ExecuteRunCommand { get; set; }
         public ICommand MonitorCommand { get; set; }
+        public ICommand DisconnectCommand { get; set; }
         public ICommand ClearNotificationsCommand { get; set; }
         public List<Run> Runs { get; set; }
 
@@ -133,6 +135,24 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             // Save stuff here...
         }
 
+        protected async override void OnDisposing()
+        {
+            await Disconnect();
+        }
+
+        private void Disconnect(object param)
+        {
+            Reset();
+        }
+
+        private async Task Disconnect()
+        {
+            if (hubConnection != null)
+            {
+                await hubConnection.DisposeAsync();
+            }
+        }
+
         private async void Monitor(object param)
         {
             await Monitor();
@@ -184,13 +204,14 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             }
         }
 
-        public void ClearNotifications(object param)
+        public async void ClearNotifications(object param)
         {
             Reset();
         }
 
-        private void Reset()
+        private async void Reset()
         {
+            await Disconnect();
             SelectedRun = null;
             HasSubscribed = false;
             Notifications.Clear();

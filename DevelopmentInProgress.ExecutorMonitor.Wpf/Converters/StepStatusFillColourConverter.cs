@@ -22,7 +22,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Converters
                 case StepStatus.InProgress:
                     return new SolidColorBrush(Colors.LightGreen);
                 case StepStatus.Complete:
-                    return new SolidColorBrush(Colors.RoyalBlue);
+                    return new SolidColorBrush(Colors.LightSkyBlue);
                 case StepStatus.Error:
                     return new SolidColorBrush(Colors.Red);
                 default:

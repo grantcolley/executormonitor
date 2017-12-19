@@ -70,6 +70,12 @@
                         Visibility="{Binding IsExecuteRunEnabled, Converter={StaticResource boolToVisibilityConverter}}">
                     <Image Source="../Images/executerun.png"/>                    
                 </Button>
+                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
+                        ToolTip="Disconnect"
+                        Command="{Binding DisconnectCommand}"
+                        Visibility="{Binding HasSubscribed, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/disconnect.png"/>
+                </Button>
                 <Label/>
             </DockPanel>
         </GroupBox>
