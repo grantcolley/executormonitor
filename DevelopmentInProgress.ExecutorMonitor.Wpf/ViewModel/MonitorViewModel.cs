@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Sockets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -23,14 +22,8 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
     public class MonitorViewModel : DocumentViewModel
     {
         private readonly IMonitorService monitorService;
-        private ObservableCollection<Message> notifications;
-        private HubConnection hubConnection;
         private Run selectedRun;
-        private bool isMonitorEnabled;
-        private bool isExecuteRunEnabled;
-        private bool hasSubscribed;
-        private IList<RunStep> notificationSteps;
-
+        
         public MonitorViewModel(ViewModelContext viewModelContext, MonitorService monitorService)
             : base(viewModelContext)
         {
@@ -38,8 +31,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             ExecuteRunCommand = new ViewModelCommand(ExecuteRun);
             DisconnectCommand = new ViewModelCommand(Disconnect);
             ClearNotificationsCommand = new ViewModelCommand(ClearNotifications);
-
-            notifications = new ObservableCollection<Message>();
 
             this.monitorService = monitorService;
         }
@@ -50,11 +41,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         public ICommand ClearNotificationsCommand { get; set; }
         public List<Run> Runs { get; set; }
 
-        public ObservableCollection<Message> Notifications
-        {
-            get { return notifications; }
-        }
-
         public Run SelectedRun
         {
             get { return selectedRun; }
@@ -64,62 +50,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                 {
                     selectedRun = value;
 
-                    IsExecuteRunEnabled = (selectedRun != null);
-                    IsMonitorEnabled = (selectedRun != null);
-
                     OnPropertyChanged("SelectedRun");
-                    OnPropertyChanged("Steps");
-                }
-            }
-        }
-
-        public bool IsExecuteRunEnabled
-        {
-            get { return isExecuteRunEnabled; }
-            set
-            {
-                if (isExecuteRunEnabled != value)
-                {
-                    isExecuteRunEnabled = value;
-                    OnPropertyChanged("IsExecuteRunEnabled");
-                }
-            }
-        }
-        
-        public bool IsMonitorEnabled
-        {
-            get { return isMonitorEnabled; }
-            set
-            {
-                if (isMonitorEnabled != value)
-                {
-                    isMonitorEnabled = value;
-                    OnPropertyChanged("IsMonitorEnabled");
-                }
-            }
-        }
-
-        public bool HasNotSubscribed
-        {
-            get { return !hasSubscribed; }
-        }
-
-        public bool HasSubscribed
-        {
-            get { return hasSubscribed; }
-            set
-            {
-                if (hasSubscribed != value)
-                {
-                    hasSubscribed = value;
-                    if(hasSubscribed)
-                    {
-                        IsMonitorEnabled = false;
-                        IsExecuteRunEnabled = false;
-                    }
-
-                    OnPropertyChanged("HasSubscribed");
-                    OnPropertyChanged("HasNotSubscribed");
                 }
             }
         }
@@ -127,7 +58,6 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         protected async override void OnPublished(object data)
         {
             Runs = await monitorService.GetRuns();
-            Reset();
         }
 
         protected async override void SaveDocument()
@@ -137,41 +67,49 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         protected async override void OnDisposing()
         {
-            await Disconnect();
+            foreach(var run in Runs)
+            {
+                await Disconnect(run);
+            }
         }
 
         private void Disconnect(object param)
         {
-            Reset();
+            var run = param as Run;
+            Reset(run);
         }
 
-        private async Task Disconnect()
+        private async Task Disconnect(Run run)
         {
-            if (hubConnection != null)
+            if (run.HubConnection != null
+                && run.HubConnection != null)
             {
-                await hubConnection.DisposeAsync();
+                await run.HubConnection.DisposeAsync();
+                run.HubConnection = null;
+                run.HasSubscribed = false;
             }
         }
 
         private async void Monitor(object param)
         {
-            await Monitor();
+            var run = param as Run;
+            await Monitor(run);
         }
 
-        private async Task<bool> Monitor()
+        private async Task<bool> Monitor(Run run)
         {
-            if (SelectedRun == null)
+            if (run == null)
             {
                 ShowMessage(new Message { MessageType = MessageType.Info, Text = "Select a Run to minitor" });
                 return false;
             }
 
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{SelectedRun.NotificationUrl}/notificationhub?runid={SelectedRun.RunId}")
+            run.HubConnection = new HubConnectionBuilder()
+                .WithUrl($"{run.NotificationUrl}/notificationhub?runid={run.RunId}")
                 .WithTransport(TransportType.WebSockets)
                 .Build();
 
-            hubConnection.On<object>("Connected", message =>
+            run.HubConnection.On<object>("Connected", message =>
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
@@ -179,7 +117,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                 });
             });
 
-            hubConnection.On<object>("Send", (message) =>
+            run.HubConnection.On<object>("Send", (message) =>
             {
                 ViewModelContext.UiDispatcher.Invoke(() =>
                 {
@@ -189,13 +127,11 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
             try
             {
-                await hubConnection.StartAsync();
+                await run.HubConnection.StartAsync();
+                
+                run.HasSubscribed = true;
 
-                notificationSteps = SelectedRun.RunStep.Flatten<RunStep>(r => r.RunId.Equals(SelectedRun.RunId)).ToList();
-
-                HasSubscribed = true;
-
-                return HasSubscribed;
+                return run.HasSubscribed;
             }
             catch(Exception ex)
             {
@@ -206,21 +142,24 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         public async void ClearNotifications(object param)
         {
-            Reset();
+            var run = param as Run;
+            Reset(run);
         }
 
-        private async void Reset()
+        private async void Reset(Run run)
         {
-            await Disconnect();
-            SelectedRun = null;
-            HasSubscribed = false;
-            Notifications.Clear();
-            ClearMessages();
+            if (run != null)
+            {
+                await Disconnect(run);
+                run.Notifications.Clear();
+                //TODO: clear RunStep messages
+                ClearMessages();
+            }
         }
 
         private void OnConnected(Message message)
         {
-            Notifications.Add(message);
+            SelectedRun.Notifications.Add(message);
             OnPropertyChanged("Notifications");
         }
 
@@ -229,7 +168,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             var stepNotifications = JsonConvert.DeserializeObject<IEnumerable<StepNotification>>(message.ToString()).ToList();
             foreach (var stepNotification in stepNotifications)
             {
-                var step = notificationSteps.First(s=>s.StepId.Equals(stepNotification.StepId));
+                var run = Runs.FirstOrDefault(r => r.RunId == stepNotification.RunId);
+                if (run == null)
+                {
+                    continue;
+                }
+
+                var step = run.NotificationSteps.First(s=>s.StepId.Equals(stepNotification.StepId));
                 step.Status = stepNotification.Status;
                 step.Message = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.Message}";
 
@@ -241,15 +186,15 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                     TextVerbose = stepNotification.ToString()
                 };
 
-                var indexedNotification = notifications.FirstOrDefault(n => n.Timestamp.Ticks > msg.Timestamp.Ticks);
+                var indexedNotification = run.Notifications.FirstOrDefault(n => n.Timestamp.Ticks > msg.Timestamp.Ticks);
                 if (indexedNotification != null)
                 {
-                    var index = Notifications.IndexOf(indexedNotification);
-                    Notifications.Insert(index, msg);
+                    var index = run.Notifications.IndexOf(indexedNotification);
+                    run.Notifications.Insert(index, msg);
                 }
                 else
                 {
-                    Notifications.Add(msg);
+                    run.Notifications.Add(msg);
                 }
             }
         }
@@ -258,16 +203,18 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
         {
             try
             {
-                var result = await Monitor();
+                var run = param as Run;
+
+                var result = await Monitor(run);
 
                 if (result)
                 {
-                    var jsonContent = JsonConvert.SerializeObject(SelectedRun.RunStep.Step);
+                    var jsonContent = JsonConvert.SerializeObject(run.RunStep.Step);
                     using (var client = new HttpClient())
                     {
                         client.DefaultRequestHeaders.Accept.Clear();
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        var response = await client.PostAsync(SelectedRun.RunStep.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+                        var response = await client.PostAsync(run.RunStep.StepUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
                     }
                 }
             }

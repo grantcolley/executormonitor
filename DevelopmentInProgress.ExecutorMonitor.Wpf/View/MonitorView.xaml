@@ -93,7 +93,7 @@
                 <messaging:MessagePanel                 
                     HeaderBackground="Transparent"
                     HeaderText="Notifications"
-                    Messages="{Binding Notifications}" 
+                    Messages="{Binding SelectedRun.Notifications}" 
                     ClearMessages="{Binding ClearNotificationsCommand}" 
                     IsExpanded="True"
                     ShowMessageTextAreaMaxWidth ="1000"
