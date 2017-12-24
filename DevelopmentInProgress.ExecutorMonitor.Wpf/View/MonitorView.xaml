@@ -20,6 +20,36 @@
         <localconverters:StepStatusProgressToVisibilityConverter x:Key="stepStatusProgressToVisibilityConverter"/>
         <localconverters:StepStatusProgressColourConverter x:Key="stepStatusProgressColourConverter"/>
 
+        <DataTemplate DataType="{x:Type model:Run}">
+            <DockPanel LastChildFill="True">
+                <Border BorderBrush="{x:Null}">
+                    <TextBlock Text="{Binding RunName}" VerticalAlignment="Center"/>
+                </Border>
+                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18" BorderThickness="0" Background="Transparent"
+                        ToolTip="Execute Run"
+                        Command="{Binding ExecuteRunCommand}"
+                        CommandParameter="{Binding .}"
+                        Visibility="{Binding IsExecuteRunEnabled, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/executerun.png"/>
+                </Button>
+                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18" BorderThickness="0" Background="Transparent"
+                        Command="{Binding MonitorCommand}"
+                        CommandParameter="{Binding .}"
+                        ToolTip="Monitor Run"
+                        Visibility="{Binding IsMonitorEnabled, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/monitorrun.png"/>
+                </Button>
+                <Button DockPanel.Dock="Right" Margin="5" Height="15" Width="15" BorderThickness="0" Background="Transparent"
+                        ToolTip="Disconnect"
+                        Command="{Binding DisconnectCommand}"
+                        CommandParameter="{Binding .}"
+                        Visibility="{Binding HasConnected, Converter={StaticResource boolToVisibilityConverter}}">
+                    <Image Source="../Images/disconnect.png"/>
+                </Button>
+                <ContentControl/>
+            </DockPanel>
+        </DataTemplate>
+        
         <HierarchicalDataTemplate DataType="{x:Type model:RunStep}">
             <StackPanel>
                 <ContentControl ToolTip="{Binding ToolTip}">
@@ -46,51 +76,84 @@
         </HierarchicalDataTemplate>
         
     </view:DocumentViewBase.Resources>
-    <DockPanel LastChildFill="True">
-        <GroupBox Header="Subscribe to Run" DockPanel.Dock="Top" Margin="5">
-            <DockPanel LastChildFill="True">
-                <ComboBox DockPanel.Dock="Left" Margin="5" Width="150"
-                          ItemsSource="{Binding Runs}"
-                          DisplayMemberPath="RunName"
-                          SelectedValuePath="RunId"
-                          SelectedItem="{Binding SelectedRun}"
-                          IsEditable="{Binding HasNotSubscribed}"
-                          IsHitTestVisible="{Binding HasNotSubscribed}"
-                          Focusable="{Binding HasNotSubscribed}">
-                </ComboBox>
-                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
-                        Command="{Binding MonitorCommand}"
-                        ToolTip="Monitor Run"
-                        Visibility="{Binding IsMonitorEnabled, Converter={StaticResource boolToVisibilityConverter}}">
-                    <Image Source="../Images/monitorrun.png"/>
-                </Button>
-                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
-                        ToolTip="Execute Run"
-                        Command="{Binding ExecuteRunCommand}"
-                        Visibility="{Binding IsExecuteRunEnabled, Converter={StaticResource boolToVisibilityConverter}}">
-                    <Image Source="../Images/executerun.png"/>                    
-                </Button>
-                <Button DockPanel.Dock="Left" Margin="5" Height="22" Width="22" BorderThickness="0" Background="Transparent"
-                        ToolTip="Disconnect"
-                        Command="{Binding DisconnectCommand}"
-                        Visibility="{Binding HasSubscribed, Converter={StaticResource boolToVisibilityConverter}}">
-                    <Image Source="../Images/disconnect.png"/>
-                </Button>
-                <Label/>
-            </DockPanel>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#ECF5FC" Offset="0" />
+                    <GradientStop Color="#98B4D2" Offset="1" />
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <GroupBox Grid.Column="0" Header="Runs" Margin="5">
+            <ListBox BorderBrush="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Runs}"
+                     SelectedItem="{Binding SelectedRun}"
+                     Background="Transparent">
+                <ListBox.Resources>
+                    <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="#FCFDFE" Offset="0" />
+                            <GradientStop Color="#D2E6FA" Offset="1" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                    <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="#FCFDFE" Offset="0" />
+                            <GradientStop Color="#D2E6FA" Offset="1" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </ListBox.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Margin" Value="5,2,5,2"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
+                                            <GradientStop Color="#F7FCFE" Offset="0" />
+                                            <GradientStop Color="#81D0F1" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderBrush">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#898C95" Offset="0" />
+                                            <GradientStop Color="#898C95" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
         </GroupBox>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Header="Run Steps" Margin="5">
-                <ContentControl Content="{Binding SelectedRun.RunStep}"/>
-            </GroupBox>
-            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
-            <GroupBox Grid.Column="2" Header="Run Log" Margin="5">
-                <messaging:MessagePanel                 
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent"/>
+        <DockPanel Grid.Column="2" LastChildFill="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Header="Run Steps" Margin="5">
+                    <ContentControl Content="{Binding SelectedRun.RunStep}"/>
+                </GroupBox>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent"/>
+                <GroupBox Grid.Column="2" Header="Run Log" Margin="5">
+                    <messaging:MessagePanel                 
                     HeaderBackground="Transparent"
                     HeaderText="Notifications"
                     Messages="{Binding SelectedRun.Notifications}" 
@@ -99,7 +162,9 @@
                     ShowMessageTextAreaMaxWidth ="1000"
                     ShowMessageTextAlignment="Left"
                     Margin="5"/>
-            </GroupBox>
-        </Grid>
+                </GroupBox>
+            </Grid>
         </DockPanel>
+        
+    </Grid>
 </view:DocumentViewBase>

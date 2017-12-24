@@ -81,12 +81,11 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         private async Task Disconnect(Run run)
         {
-            if (run.HubConnection != null
-                && run.HubConnection != null)
+            if (run.HubConnection != null)
             {
                 await run.HubConnection.DisposeAsync();
                 run.HubConnection = null;
-                run.HasSubscribed = false;
+                run.HasConnected = false;
             }
         }
 
@@ -129,9 +128,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 await run.HubConnection.StartAsync();
                 
-                run.HasSubscribed = true;
+                run.HasConnected = true;
 
-                return run.HasSubscribed;
+                return run.HasConnected;
             }
             catch(Exception ex)
             {

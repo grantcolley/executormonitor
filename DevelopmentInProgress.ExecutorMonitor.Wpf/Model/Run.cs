@@ -11,7 +11,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
     {
         private bool isMonitorEnabled;
         private bool isExecuteRunEnabled;
-        private bool hasSubscribed;
+        private bool hasConnected;
         private HubConnection hubConnection;
         private IList<RunStep> notificationSteps;
         private ObservableCollection<Message> notifications;
@@ -19,6 +19,9 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
         public Run()
         {
             notifications = new ObservableCollection<Message>();
+
+            IsMonitorEnabled = true;
+            IsExecuteRunEnabled = true;
         }
 
         public int RunId { get; set; }
@@ -69,27 +72,27 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
             }
         }
 
-        public bool HasNotSubscribed
+        public bool HasNotConnected
         {
-            get { return !hasSubscribed; }
+            get { return !hasConnected; }
         }
 
-        public bool HasSubscribed
+        public bool HasConnected
         {
-            get { return hasSubscribed; }
+            get { return hasConnected; }
             set
             {
-                if (hasSubscribed != value)
+                if (hasConnected != value)
                 {
-                    hasSubscribed = value;
-                    if (hasSubscribed)
+                    hasConnected = value;
+                    if (hasConnected)
                     {
                         IsMonitorEnabled = false;
                         IsExecuteRunEnabled = false;
                     }
 
-                    OnPropertyChanged("HasSubscribed");
-                    OnPropertyChanged("HasNotSubscribed");
+                    OnPropertyChanged("HasConnected");
+                    OnPropertyChanged("HasNotConnected");
                 }
             }
         }
