@@ -51,9 +51,15 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
                     selectedRun = value;
 
                     OnPropertyChanged("SelectedRun");
+                    OnPropertyChanged("SelectedRunName");
+                    OnPropertyChanged("IsRunSelected");
                 }
             }
         }
+
+        public string SelectedRunName => selectedRun == null ? string.Empty : $"{selectedRun.RunName} - {selectedRun.RunId}";
+
+        public bool IsRunSelected => selectedRun == null ? false : true;
 
         protected async override void OnPublished(object data)
         {

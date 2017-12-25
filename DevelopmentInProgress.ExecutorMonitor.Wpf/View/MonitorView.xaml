@@ -11,7 +11,7 @@
                        xmlns:localconverters="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Converters"
                        mc:Ignorable="d" >
     <view:DocumentViewBase.Resources>
-        
+
         <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
         <localconverters:StepStatusFillColourConverter x:Key="stepStatusFillColourConverter"/>
         <localconverters:StepStatusStrokeColourConverter x:Key="stepStatusStrokeColourConverter"/>
@@ -141,30 +141,26 @@
             </ListBox>
         </GroupBox>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent"/>
-        <DockPanel Grid.Column="2" LastChildFill="True">
+        <GroupBox Grid.Column="2" Header="{Binding SelectedRunName}" Margin="5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="1"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Grid.Column="0" Header="Run Steps" Margin="5">
-                    <ContentControl Content="{Binding SelectedRun.RunStep}"/>
-                </GroupBox>
+                <ContentControl Grid.Column="0" Margin="5" Content="{Binding SelectedRun.RunStep}"/>
                 <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent"/>
-                <GroupBox Grid.Column="2" Header="Run Log" Margin="5">
-                    <messaging:MessagePanel                 
-                    HeaderBackground="Transparent"
-                    HeaderText="Notifications"
-                    Messages="{Binding SelectedRun.Notifications}" 
-                    ClearMessages="{Binding ClearNotificationsCommand}" 
-                    IsExpanded="True"
-                    ShowMessageTextAreaMaxWidth ="1000"
-                    ShowMessageTextAlignment="Left"
-                    Margin="5"/>
-                </GroupBox>
+                <messaging:MessagePanel Grid.Column="2"                
+                                        HeaderBackground="Transparent"
+                                        HeaderText="Notifications"
+                                        Messages="{Binding SelectedRun.Notifications}" 
+                                        ClearMessages="{Binding ClearNotificationsCommand}" 
+                                        IsExpanded="True"
+                                        ShowMessageTextAreaMaxWidth ="1000"
+                                        ShowMessageTextAlignment="Left"
+                                        Margin="5"
+                                        Visibility="{Binding IsRunSelected, Converter={StaticResource boolToVisibilityConverter}}"/>
             </Grid>
-        </DockPanel>
-        
+        </GroupBox>
     </Grid>
 </view:DocumentViewBase>
