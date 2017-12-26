@@ -57,13 +57,18 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             }
         }
 
-        public string SelectedRunName => selectedRun == null ? string.Empty : $"{selectedRun.RunName} - {selectedRun.RunId}";
+        public string SelectedRunName => selectedRun == null ? null : $"{selectedRun.RunName} - {selectedRun.RunId}";
 
         public bool IsRunSelected => selectedRun == null ? false : true;
 
         protected async override void OnPublished(object data)
         {
-            Runs = await monitorService.GetRuns();
+            SelectedRun = null;
+            if (Runs == null
+                || !Runs.Any())
+            {
+                Runs = await monitorService.GetRuns();
+            }
         }
 
         protected async override void SaveDocument()
