@@ -185,12 +185,12 @@
         <GroupBox Grid.Column="2" Margin="5" Style="{StaticResource RunGroupBox}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
                 <ContentControl Grid.Column="0" Margin="5" Content="{Binding SelectedRun.RunStep}"/>
-                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Margin="5" Background="LightGray"/>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="LightGray"/>
                 <messaging:MessagePanel Grid.Column="2"                
                                         HeaderBackground="Transparent"
                                         HeaderText="Notifications"
