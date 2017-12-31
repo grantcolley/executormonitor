@@ -9,6 +9,7 @@
                        xmlns:converters="clr-namespace:DevelopmentInProgress.Origin.Converters;assembly=DevelopmentInProgress.Origin"
                        xmlns:model="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Model"
                        xmlns:localconverters="clr-namespace:DevelopmentInProgress.ExecutorMonitor.Wpf.Converters"
+                       xmlns:filterbox="clr-namespace:DevelopmentInProgress.WPFControls.FilterBox;assembly=DipWpfControls"
                        mc:Ignorable="d" >
     <view:DocumentViewBase.Resources>
 
@@ -132,54 +133,59 @@
             </LinearGradientBrush>
         </Grid.Background>
         <GroupBox Grid.Column="0" Header="Runs" Margin="5">
-            <ListBox BorderBrush="Transparent" BorderThickness="0"
-                     ItemsSource="{Binding Runs}"
-                     SelectedItem="{Binding SelectedRun}"
-                     Background="Transparent"
-                     HorizontalContentAlignment="Stretch">
-                <ListBox.Resources>
-                    <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
-                        <LinearGradientBrush.GradientStops>
-                            <GradientStop Color="#FCFDFE" Offset="0" />
-                            <GradientStop Color="#D2E6FA" Offset="1" />
-                        </LinearGradientBrush.GradientStops>
-                    </LinearGradientBrush>
-                    <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
-                        <LinearGradientBrush.GradientStops>
-                            <GradientStop Color="#FCFDFE" Offset="0" />
-                            <GradientStop Color="#D2E6FA" Offset="1" />
-                        </LinearGradientBrush.GradientStops>
-                    </LinearGradientBrush>
-                </ListBox.Resources>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Margin" Value="5,2,5,2"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Foreground" Value="Blue"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#F7FCFE" Offset="0" />
-                                            <GradientStop Color="#81D0F1" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="BorderBrush">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#898C95" Offset="0" />
-                                            <GradientStop Color="#898C95" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>
+            <DockPanel LastChildFill="True">
+                <filterbox:XamlFilterBox DockPanel.Dock="Top" 
+                                         ItemsSource="{Binding Runs}"
+                                         FilterFieldName="RunName"/>
+                <ListBox BorderBrush="Transparent" BorderThickness="0"
+                         ItemsSource="{Binding Runs}"
+                         SelectedItem="{Binding SelectedRun}"
+                         Background="Transparent"
+                         HorizontalContentAlignment="Stretch">
+                    <ListBox.Resources>
+                        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="#FCFDFE" Offset="0" />
+                                <GradientStop Color="#D2E6FA" Offset="1" />
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" StartPoint="0,0" EndPoint="0,1">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="#FCFDFE" Offset="0" />
+                                <GradientStop Color="#D2E6FA" Offset="1" />
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </ListBox.Resources>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Margin" Value="5,2,5,2"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="Blue"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
+                                                <GradientStop Color="#F7FCFE" Offset="0" />
+                                                <GradientStop Color="#81D0F1" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="BorderBrush">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#898C95" Offset="0" />
+                                                <GradientStop Color="#898C95" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </DockPanel>
         </GroupBox>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent"/>
         <GroupBox Grid.Column="2" Margin="5" Style="{StaticResource RunGroupBox}">
