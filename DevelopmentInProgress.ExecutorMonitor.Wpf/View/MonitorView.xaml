@@ -22,7 +22,7 @@
         <localconverters:StepStatusProgressColourConverter x:Key="stepStatusProgressColourConverter"/>
 
         <DataTemplate DataType="{x:Type model:Run}">
-            <DockPanel LastChildFill="True">
+            <DockPanel LastChildFill="True" Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}">
                 <Border BorderBrush="{x:Null}">
                     <TextBlock Text="{Binding RunName}" VerticalAlignment="Center"/>
                 </Border>
@@ -136,7 +136,8 @@
             <DockPanel LastChildFill="True">
                 <filterbox:XamlFilterBox DockPanel.Dock="Top" 
                                          ItemsSource="{Binding Runs}"
-                                         FilterFieldName="RunName"/>
+                                         FilterFieldName="RunName"
+                                         VisibilityFieldName="IsVisible"/>
                 <ListBox BorderBrush="Transparent" BorderThickness="0"
                          ItemsSource="{Binding Runs}"
                          SelectedItem="{Binding SelectedRun}"
