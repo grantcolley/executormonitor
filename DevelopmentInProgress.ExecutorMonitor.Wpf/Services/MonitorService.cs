@@ -11,220 +11,356 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
         {
             var tcs = new TaskCompletionSource<List<Run>>();
 
-            var run1 = new Run { RunId = 101, RunName = "Test Run", NotificationUrl = "http://localhost:5000" };
-            var step1 = GetRunSteps1(run1.RunId, run1.RunName);
-            run1.RunStep = step1;
+            var ifrs9 = new Run { RunId = 101, RunName = "IFRS9", NotificationUrl = "http://localhost:5000" };
+            var ifrs9Root = GetIfrs9(ifrs9.RunId, ifrs9.RunName);
+            ifrs9.RunStep = ifrs9Root;
 
-            var run2 = new Run { RunId = 201, RunName = "2nd Run", NotificationUrl = "http://localhost:5000" };
-            var step2 = GetRunSteps2(run2.RunId, run2.RunName);
-            run2.RunStep = step2;
+            var letterGeneration = new Run { RunId = 201, RunName = "Letter Generation", NotificationUrl = "http://localhost:5000" };
+            var getLetters = GetLetters(letterGeneration.RunId, letterGeneration.RunName);
+            letterGeneration.RunStep = getLetters;
 
-            var runs = new List<Run>() { run1, run2};
+            var runs = new List<Run>() { ifrs9, letterGeneration};
             tcs.SetResult(runs);
             return tcs.Task;
         }
 
-        private RunStep GetRunSteps1(int runId, string runName)
+        private RunStep GetIfrs9(int runId, string runName)
         {
-            var step1 = new Step();
-            step1.RunId = runId;
-            step1.RunName = runName;
-            step1.StepId = 1;
-            step1.StepName = "Step 1";
-            step1.TargetAssembly = "TestLibrary.dll";
-            step1.TargetType = "TestLibrary.TestRunner";
-            step1.Payload = "1000|Hello";
-            step1.Urls = new[] { "http://localhost:5000" };
-            step1.Dependencies = new string[]
+            var ifrs9 = new Step();
+            ifrs9.RunId = runId;
+            ifrs9.RunName = runName;
+            ifrs9.StepId = 1;
+            ifrs9.StepName = "IFRS9";
+            ifrs9.TargetAssembly = "TestLibrary.dll";
+            ifrs9.TargetType = "TestLibrary.TestRunner";
+            ifrs9.Payload = "1000|Hello";
+            ifrs9.Urls = new[] { "http://localhost:5000" };
+            ifrs9.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step2 = new Step();
-            step2.RunId = runId;
-            step2.RunName = runName;
-            step2.StepId = 2;
-            step2.StepName = "Step 2";
+            var sourceData = new Step();
+            sourceData.RunId = runId;
+            sourceData.RunName = runName;
+            sourceData.StepId = 2;
+            sourceData.StepName = "Source Data";
 
-            var step21 = new Step();
-            step21.RunId = runId;
-            step21.RunName = runName;
-            step21.StepId = 21;
-            step21.StepName = "Step 2.1";
-            step21.TargetAssembly = "TestLibrary.dll";
-            step21.TargetType = "TestLibrary.TestRunner";
-            step21.Payload = "3000|Sub Step 2.1";
-            step21.Dependencies = new string[]
+            var counterparties = new Step();
+            counterparties.RunId = runId;
+            counterparties.RunName = runName;
+            counterparties.StepId = 21;
+            counterparties.StepName = "Counterparties";
+            counterparties.TargetAssembly = "TestLibrary.dll";
+            counterparties.TargetType = "TestLibrary.TestRunner";
+            counterparties.Payload = "3000|Sub Step 2.1";
+            counterparties.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step22 = new Step();
-            step22.RunId = runId;
-            step22.RunName = runName;
-            step22.StepId = 22;
-            step22.StepName = "Step 2.2";
-            step22.TargetAssembly = "TestLibrary.dll";
-            step22.TargetType = "TestLibrary.TestRunner";
-            step22.Payload = "5000|Sub Step 2.2";
-            step22.Dependencies = new string[]
+            var pd = new Step();
+            pd.RunId = runId;
+            pd.RunName = runName;
+            pd.StepId = 22;
+            pd.StepName = "Probability Of Default";
+            pd.TargetAssembly = "TestLibrary.dll";
+            pd.TargetType = "TestLibrary.TestRunner";
+            pd.Payload = "5000|Sub Step 2.2";
+            pd.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step23 = new Step();
-            step23.RunId = runId;
-            step23.RunName = runName;
-            step23.StepId = 23;
-            step23.StepName = "Step 2.3";
-            step23.TargetAssembly = "TestLibrary.dll";
-            step23.TargetType = "TestLibrary.TestRunner";
-            step23.Payload = "1000|Sub Step 2.3";
-            step23.Dependencies = new string[]
+            var lgd = new Step();
+            lgd.RunId = runId;
+            lgd.RunName = runName;
+            lgd.StepId = 23;
+            lgd.StepName = "Loss Given Default";
+            lgd.TargetAssembly = "TestLibrary.dll";
+            lgd.TargetType = "TestLibrary.TestRunner";
+            lgd.Payload = "1000|Sub Step 2.3";
+            lgd.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step3 = new Step();
-            step3.RunId = runId;
-            step3.RunName = runName;
-            step3.StepId = 3;
-            step3.StepName = "Step 3";
-            step3.TargetAssembly = "TestLibrary.dll";
-            step3.TargetType = "TestLibrary.TestRunner";
-            step3.Payload = "2000|Goodbye";
-            step3.Dependencies = new string[]
+            var transform = new Step();
+            transform.RunId = runId;
+            transform.RunName = runName;
+            transform.StepId = 3;
+            transform.StepName = "Transform";
+            transform.TargetAssembly = "TestLibrary.dll";
+            transform.TargetType = "TestLibrary.TestRunner";
+            transform.Payload = "2000|Goodbye";
+            transform.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step31 = new Step();
-            step31.RunId = runId;
-            step31.RunName = runName;
-            step31.StepId = 31;
-            step31.StepName = "Step 3.1";
-            step31.TargetAssembly = "TestLibrary.dll";
-            step31.TargetType = "TestLibrary.TestRunner";
-            step31.Payload = "1500|Goodbye";
-            step31.Dependencies = new string[]
+            var applyPd = new Step();
+            applyPd.RunId = runId;
+            applyPd.RunName = runName;
+            applyPd.StepId = 31;
+            applyPd.StepName = "Apply PD's";
+            applyPd.TargetAssembly = "TestLibrary.dll";
+            applyPd.TargetType = "TestLibrary.TestRunner";
+            applyPd.Payload = "1500|Goodbye";
+            applyPd.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step4 = new Step();
-            step4.RunId = runId;
-            step4.RunName = runName;
-            step4.StepId = 4;
-            step4.StepName = "Step 4";
-            step4.TargetAssembly = "TestLibrary.dll";
-            step4.TargetType = "TestLibrary.TestRunner";
-            step4.Payload = "7000|Goodbye";
-            step4.Dependencies = new string[]
+            var applyLgd = new Step();
+            applyLgd.RunId = runId;
+            applyLgd.RunName = runName;
+            applyLgd.StepId = 311;
+            applyLgd.StepName = "Apply LGD's";
+            applyLgd.TargetAssembly = "TestLibrary.dll";
+            applyLgd.TargetType = "TestLibrary.TestRunner";
+            applyLgd.Payload = "1500|Goodbye";
+            applyLgd.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            step1.TransitionSteps = new Step[] { step2 };
-            step2.SubSteps = new Step[] { step21, step22, step23 };
-            step2.TransitionSteps = new Step[] { step3 };
-            step3.SubSteps = new Step[] { step31 };
-            step3.TransitionSteps = new Step[] { step4 };
+            var modelling = new Step();
+            modelling.RunId = runId;
+            modelling.RunName = runName;
+            modelling.StepId = 4;
+            modelling.StepName = "Modelling";
+            modelling.TargetAssembly = "TestLibrary.dll";
+            modelling.TargetType = "TestLibrary.TestRunner";
+            modelling.Payload = "7000|Goodbye";
+            modelling.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
 
-            var runStep1 = new RunStep(step1);
-            var runStep2 = new RunStep(step2);
-            var runStep21 = new RunStep(step21);
-            var runStep22 = new RunStep(step22);
-            var runStep23 = new RunStep(step23);
-            var runStep3 = new RunStep(step3);
-            var runStep31 = new RunStep(step31);
-            var runStep4 = new RunStep(step4);
 
-            runStep1.TransitionSteps.Add(runStep2);
-            runStep2.SubSteps.AddRange(new[] { runStep21, runStep22, runStep23 });
-            runStep2.TransitionSteps.Add(runStep3);
-            runStep3.SubSteps.Add(runStep31);
-            runStep3.TransitionSteps.Add(runStep4);
+            var scenario1 = new Step();
+            scenario1.RunId = runId;
+            scenario1.RunName = runName;
+            scenario1.StepId = 41;
+            scenario1.StepName = "Scenario 1";
+            scenario1.TargetAssembly = "TestLibrary.dll";
+            scenario1.TargetType = "TestLibrary.TestRunner";
+            scenario1.Payload = "7000|Goodbye";
+            scenario1.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
 
-            return runStep1;
+            var scenario2 = new Step();
+            scenario2.RunId = runId;
+            scenario2.RunName = runName;
+            scenario2.StepId = 42;
+            scenario2.StepName = "Scenario 2";
+            scenario2.TargetAssembly = "TestLibrary.dll";
+            scenario2.TargetType = "TestLibrary.TestRunner";
+            scenario2.Payload = "7000|Goodbye";
+            scenario2.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var scenario3 = new Step();
+            scenario3.RunId = runId;
+            scenario3.RunName = runName;
+            scenario3.StepId = 43;
+            scenario3.StepName = "Scenario 3";
+            scenario3.TargetAssembly = "TestLibrary.dll";
+            scenario3.TargetType = "TestLibrary.TestRunner";
+            scenario3.Payload = "7000|Goodbye";
+            scenario3.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var scenario4 = new Step();
+            scenario4.RunId = runId;
+            scenario4.RunName = runName;
+            scenario4.StepId = 44;
+            scenario4.StepName = "Scenario 4";
+            scenario4.TargetAssembly = "TestLibrary.dll";
+            scenario4.TargetType = "TestLibrary.TestRunner";
+            scenario4.Payload = "7000|Goodbye";
+            scenario4.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var scenario5 = new Step();
+            scenario5.RunId = runId;
+            scenario5.RunName = runName;
+            scenario5.StepId = 45;
+            scenario5.StepName = "Scenario 5";
+            scenario5.TargetAssembly = "TestLibrary.dll";
+            scenario5.TargetType = "TestLibrary.TestRunner";
+            scenario5.Payload = "7000|Goodbye";
+            scenario5.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var scenario6 = new Step();
+            scenario6.RunId = runId;
+            scenario6.RunName = runName;
+            scenario6.StepId = 46;
+            scenario6.StepName = "Scenario 6";
+            scenario6.TargetAssembly = "TestLibrary.dll";
+            scenario6.TargetType = "TestLibrary.TestRunner";
+            scenario6.Payload = "7000|Goodbye";
+            scenario6.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var reporting = new Step();
+            reporting.RunId = runId;
+            reporting.RunName = runName;
+            reporting.StepId = 4;
+            reporting.StepName = "Reporting";
+            reporting.TargetAssembly = "TestLibrary.dll";
+            reporting.TargetType = "TestLibrary.TestRunner";
+            reporting.Payload = "7000|Goodbye";
+            reporting.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            ifrs9.TransitionSteps = new Step[] { sourceData };
+            sourceData.SubSteps = new Step[] { counterparties, pd, lgd };
+            sourceData.TransitionSteps = new Step[] { transform };
+            transform.SubSteps = new Step[] { applyPd };
+            applyPd.SubSteps = new Step[] { applyLgd};
+            transform.TransitionSteps = new Step[] { modelling };
+            modelling.SubSteps = new Step[] { scenario1, scenario2, scenario3, scenario4, scenario5, scenario6 };
+            modelling.TransitionSteps = new Step[] { reporting };
+
+            var ifrs9Root = new RunStep(ifrs9);
+            var runSourceData = new RunStep(sourceData);
+            var runCounterparties = new RunStep(counterparties);
+            var runPd = new RunStep(pd);
+            var runLgd = new RunStep(lgd);
+            var runTransform = new RunStep(transform);
+            var runApplyPd = new RunStep(applyPd);
+            var runApplyLgd = new RunStep(applyLgd);
+
+            var runModelling = new RunStep(modelling);
+            var runScenario1 = new RunStep(scenario1);
+            var runScenario2 = new RunStep(scenario2);
+            var runScenario3 = new RunStep(scenario3);
+            var runScenario4 = new RunStep(scenario4);
+            var runScenario5 = new RunStep(scenario5);
+            var runScenario6 = new RunStep(scenario6);
+
+            var runReporting = new RunStep(reporting);
+
+            ifrs9Root.TransitionSteps.Add(runSourceData);
+            runSourceData.SubSteps.AddRange(new[] { runCounterparties, runPd, runLgd });
+            runSourceData.TransitionSteps.Add(runTransform);
+            runTransform.SubSteps.Add(runApplyPd);
+            runApplyPd.SubSteps.Add(runApplyLgd);
+            runTransform.TransitionSteps.Add(runModelling);
+            runModelling.SubSteps.AddRange(new[] { runScenario1, runScenario2, runScenario3, runScenario4, runScenario5, runScenario6 });
+            runModelling.TransitionSteps.Add(runReporting);
+            return ifrs9Root;
         }
 
-        private RunStep GetRunSteps2(int runId, string runName)
+        private RunStep GetLetters(int runId, string runName)
         {
-            var step1 = new Step();
-            step1.RunId = runId;
-            step1.RunName = runName;
-            step1.StepId = 1;
-            step1.StepName = "Step 1";
-            step1.TargetAssembly = "TestLibrary.dll";
-            step1.TargetType = "TestLibrary.TestRunner";
-            step1.Payload = "1000|Hello";
-            step1.Urls = new[] { "http://localhost:5000" };
-            step1.Dependencies = new string[]
+            var getLetters = new Step();
+            getLetters.RunId = runId;
+            getLetters.RunName = runName;
+            getLetters.StepId = 1;
+            getLetters.StepName = "Get Letters";
+            getLetters.TargetAssembly = "TestLibrary.dll";
+            getLetters.TargetType = "TestLibrary.TestRunner";
+            getLetters.Payload = "1000|Hello";
+            getLetters.Urls = new[] { "http://localhost:5000" };
+            getLetters.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step2 = new Step();
-            step2.RunId = runId;
-            step2.RunName = runName;
-            step2.StepId = 2;
-            step2.StepName = "Step 2";
+            var distributeProcessing = new Step();
+            distributeProcessing.RunId = runId;
+            distributeProcessing.RunName = runName;
+            distributeProcessing.StepId = 2;
+            distributeProcessing.StepName = "Distribute Processing";
 
-            var step21 = new Step();
-            step21.RunId = runId;
-            step21.RunName = runName;
-            step21.StepId = 21;
-            step21.StepName = "Step 2.1";
-            step21.TargetAssembly = "TestLibrary.dll";
-            step21.TargetType = "TestLibrary.TestRunner";
-            step21.Payload = "3000|Sub Step 2.1";
-            step21.Dependencies = new string[]
+            var customers = new Step();
+            customers.RunId = runId;
+            customers.RunName = runName;
+            customers.StepId = 21;
+            customers.StepName = "Customers";
+            customers.TargetAssembly = "TestLibrary.dll";
+            customers.TargetType = "TestLibrary.TestRunner";
+            customers.Payload = "3000|Sub Step 2.1";
+            customers.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step22 = new Step();
-            step22.RunId = runId;
-            step22.RunName = runName;
-            step22.StepId = 22;
-            step22.StepName = "Step 2.2";
-            step22.TargetAssembly = "TestLibrary.dll";
-            step22.TargetType = "TestLibrary.TestRunner";
-            step22.Payload = "5000|Sub Step 2.2";
-            step22.Dependencies = new string[]
+            var nonCustomers = new Step();
+            nonCustomers.RunId = runId;
+            nonCustomers.RunName = runName;
+            nonCustomers.StepId = 22;
+            nonCustomers.StepName = "Non-Customers";
+            nonCustomers.TargetAssembly = "TestLibrary.dll";
+            nonCustomers.TargetType = "TestLibrary.TestRunner";
+            nonCustomers.Payload = "5000|Sub Step 2.2";
+            nonCustomers.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step221 = new Step();
-            step221.RunId = runId;
-            step221.RunName = runName;
-            step221.StepId = 221;
-            step221.StepName = "Step 2.2.1";
-            step221.TargetAssembly = "TestLibrary.dll";
-            step221.TargetType = "TestLibrary.TestRunner";
-            step221.Payload = "5000|Sub Step 2.2.1";
-            step221.Dependencies = new string[]
+            var ResponseRequired = new Step();
+            ResponseRequired.RunId = runId;
+            ResponseRequired.RunName = runName;
+            ResponseRequired.StepId = 221;
+            ResponseRequired.StepName = "Response Required";
+            ResponseRequired.TargetAssembly = "TestLibrary.dll";
+            ResponseRequired.TargetType = "TestLibrary.TestRunner";
+            ResponseRequired.Payload = "5000|Sub Step 2.2.1";
+            ResponseRequired.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
@@ -232,15 +368,15 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
 
             };
 
-            var step222 = new Step();
-            step222.RunId = runId;
-            step222.RunName = runName;
-            step222.StepId = 222;
-            step222.StepName = "Step 2.2.2";
-            step222.TargetAssembly = "TestLibrary.dll";
-            step222.TargetType = "TestLibrary.TestRunner";
-            step222.Payload = "5000|Sub Step 2.2.2";
-            step222.Dependencies = new string[]
+            var responseNotRequired = new Step();
+            responseNotRequired.RunId = runId;
+            responseNotRequired.RunName = runName;
+            responseNotRequired.StepId = 222;
+            responseNotRequired.StepName = "Response Not Required";
+            responseNotRequired.TargetAssembly = "TestLibrary.dll";
+            responseNotRequired.TargetType = "TestLibrary.TestRunner";
+            responseNotRequired.Payload = "5000|Sub Step 2.2.2";
+            responseNotRequired.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
@@ -248,91 +384,74 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
 
             };
             
-            var step23 = new Step();
-            step23.RunId = runId;
-            step23.RunName = runName;
-            step23.StepId = 23;
-            step23.StepName = "Step 2.3";
-            step23.TargetAssembly = "TestLibrary.dll";
-            step23.TargetType = "TestLibrary.TestRunner";
-            step23.Payload = "1000|Sub Step 2.3";
-            step23.Dependencies = new string[]
+            var offline = new Step();
+            offline.RunId = runId;
+            offline.RunName = runName;
+            offline.StepId = 23;
+            offline.StepName = "Offline";
+            offline.TargetAssembly = "TestLibrary.dll";
+            offline.TargetType = "TestLibrary.TestRunner";
+            offline.Payload = "1000|Sub Step 2.3";
+            offline.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step24 = new Step();
-            step24.RunId = runId;
-            step24.RunName = runName;
-            step24.StepId = 24;
-            step24.StepName = "Step 2.4";
-            step24.TargetAssembly = "TestLibrary.dll";
-            step24.TargetType = "TestLibrary.TestRunner";
-            step24.Payload = "2000|Goodbye";
-            step24.Dependencies = new string[]
+            var noLetterRequired = new Step();
+            noLetterRequired.RunId = runId;
+            noLetterRequired.RunName = runName;
+            noLetterRequired.StepId = 24;
+            noLetterRequired.StepName = "No Letter Required";
+            noLetterRequired.TargetAssembly = "TestLibrary.dll";
+            noLetterRequired.TargetType = "TestLibrary.TestRunner";
+            noLetterRequired.Payload = "2000|Goodbye";
+            noLetterRequired.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step3 = new Step();
-            step3.RunId = runId;
-            step3.RunName = runName;
-            step3.StepId = 3;
-            step3.StepName = "Step 3";
-            step3.TargetAssembly = "TestLibrary.dll";
-            step3.TargetType = "TestLibrary.TestRunner";
-            step3.Payload = "1500|Goodbye";
-            step3.Dependencies = new string[]
+            var publish = new Step();
+            publish.RunId = runId;
+            publish.RunName = runName;
+            publish.StepId = 3;
+            publish.StepName = "Publish";
+            publish.TargetAssembly = "TestLibrary.dll";
+            publish.TargetType = "TestLibrary.TestRunner";
+            publish.Payload = "1500|Goodbye";
+            publish.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var step4 = new Step();
-            step4.RunId = runId;
-            step4.RunName = runName;
-            step4.StepId = 4;
-            step4.StepName = "Step 4";
-            step4.TargetAssembly = "TestLibrary.dll";
-            step4.TargetType = "TestLibrary.TestRunner";
-            step4.Payload = "7000|Goodbye";
-            step4.Dependencies = new string[]
-            {
-                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
-                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
-                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
-            };
+            getLetters.TransitionSteps = new Step[] { distributeProcessing };
+            distributeProcessing.SubSteps = new Step[] { customers, nonCustomers, offline, noLetterRequired };
+            distributeProcessing.TransitionSteps = new Step[] { publish };
 
-            step1.TransitionSteps = new Step[] { step2 };
-            step2.SubSteps = new Step[] { step21, step22, step23, step24 };
-            step2.TransitionSteps = new Step[] { step3 };
+            var runGetLetters = new RunStep(getLetters);
+            var runDistributeProcessing = new RunStep(distributeProcessing);
+            var runCustomers = new RunStep(customers);
+            var runNonCustomers = new RunStep(nonCustomers);
+            var runResponseRequired = new RunStep(ResponseRequired);
+            var runResponseNotRequired = new RunStep(responseNotRequired);
+            var runOffline = new RunStep(offline);
+            var runNoLetterRequired = new RunStep(noLetterRequired);
+            var runPublish = new RunStep(publish);
 
-            var runStep1 = new RunStep(step1);
-            var runStep2 = new RunStep(step2);
-            var runStep21 = new RunStep(step21);
-            var runStep22 = new RunStep(step22);
-            var runStep221 = new RunStep(step221);
-            var runStep222 = new RunStep(step222);
-            var runStep23 = new RunStep(step23);
-            var runStep24 = new RunStep(step24);
-            var runStep3 = new RunStep(step3);
-            var runStep4 = new RunStep(step4);
+            runGetLetters.TransitionSteps.Add(runDistributeProcessing);
 
-            runStep1.TransitionSteps.Add(runStep2);
+            runNonCustomers.SubSteps.AddRange(new[] { runResponseRequired, runResponseNotRequired });
 
-            runStep22.SubSteps.AddRange(new[] { runStep221, runStep222 });
+            runDistributeProcessing.SubSteps.AddRange(new[] { runCustomers, runNonCustomers, runOffline });
 
-            runStep2.SubSteps.AddRange(new[] { runStep21, runStep22, runStep23 });
+            runDistributeProcessing.TransitionSteps.Add(runPublish);
 
-            runStep2.TransitionSteps.Add(runStep3);
-            runStep3.TransitionSteps.Add(runStep4);
-
-            return runStep1;
+            return runGetLetters;
         }
     }
 }
