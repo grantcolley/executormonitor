@@ -21,29 +21,70 @@
         <localconverters:StepStatusProgressToVisibilityConverter x:Key="stepStatusProgressToVisibilityConverter"/>
         <localconverters:StepStatusProgressColourConverter x:Key="stepStatusProgressColourConverter"/>
 
+        <Style x:Key="RunButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}" BorderThickness="1">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="BorderBrush">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="#898C95" Offset="0" />
+                                                        <GradientStop Color="#898C95" Offset="1" />
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Border.Style>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
         <DataTemplate DataType="{x:Type model:Run}">
             <DockPanel LastChildFill="True" Visibility="{Binding IsVisible, Converter={StaticResource boolToVisibilityConverter}}">
                 <Border BorderBrush="{x:Null}">
                     <TextBlock Text="{Binding RunName}" VerticalAlignment="Center"/>
                 </Border>
-                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18" BorderThickness="0" Background="Transparent"
+                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18"
+                        Style="{StaticResource RunButtonStyle}"
                         ToolTip="Execute Run"
-                        Command="{Binding ExecuteRunCommand}"
-                        CommandParameter="{Binding .}"
+                        Command="{Binding Path=DataContext.ExecuteRunCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DocumentViewBase}}}"
+                        CommandParameter="{Binding}"
                         Visibility="{Binding IsExecuteRunEnabled, Converter={StaticResource boolToVisibilityConverter}}">
                     <Image Source="../Images/executerun.png"/>
                 </Button>
-                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18" BorderThickness="0" Background="Transparent"
-                        Command="{Binding MonitorCommand}"
-                        CommandParameter="{Binding .}"
+                <Button DockPanel.Dock="Right" Margin="5" Height="18" Width="18"
+                        Style="{StaticResource RunButtonStyle}"
+                        Command="{Binding Path=DataContext.MonitorCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DocumentViewBase}}}"
+                        CommandParameter="{Binding}"
                         ToolTip="Monitor Run"
                         Visibility="{Binding IsMonitorEnabled, Converter={StaticResource boolToVisibilityConverter}}">
                     <Image Source="../Images/monitorrun.png"/>
                 </Button>
-                <Button DockPanel.Dock="Right" Margin="5" Height="15" Width="15" BorderThickness="0" Background="Transparent"
+                <Button DockPanel.Dock="Right" Margin="5" Height="15" Width="15"
+                        Style="{StaticResource RunButtonStyle}"
+                        Command="{Binding Path=DataContext.DisconnectCommand, RelativeSource={RelativeSource AncestorType={x:Type view:DocumentViewBase}}}"
+                        CommandParameter="{Binding}"
                         ToolTip="Disconnect"
-                        Command="{Binding DisconnectCommand}"
-                        CommandParameter="{Binding .}"
                         Visibility="{Binding HasConnected, Converter={StaticResource boolToVisibilityConverter}}">
                     <Image Source="../Images/disconnect.png"/>
                 </Button>
