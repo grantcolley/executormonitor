@@ -102,7 +102,7 @@
                                  Visibility="{Binding Status, Converter={StaticResource stepStatusInactiveToVisibilityConverter}}"/>
                         <Viewbox DockPanel.Dock="Left" Width="20" Height="20" Margin="2"
                                  Visibility="{Binding Status, Converter={StaticResource stepStatusProgressToVisibilityConverter}}">
-                        <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"/>
+                            <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"/>
                         </Viewbox>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
                         <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
@@ -233,9 +233,9 @@
         <GroupBox Grid.Column="2" Margin="5" Style="{StaticResource RunGroupBox}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1"/>
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
                 <ContentControl Grid.Column="0" Margin="5" Content="{Binding SelectedRun.RunStep}"/>
                 <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="LightGray"/>

@@ -249,7 +249,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             var reporting = new Step();
             reporting.RunId = runId;
             reporting.RunName = runName;
-            reporting.StepId = 4;
+            reporting.StepId = 5;
             reporting.StepName = "Reporting";
             reporting.TargetAssembly = "TestLibrary.dll";
             reporting.TargetType = "TestLibrary.TestRunner";
@@ -354,15 +354,15 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
                 @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
             };
 
-            var ResponseRequired = new Step();
-            ResponseRequired.RunId = runId;
-            ResponseRequired.RunName = runName;
-            ResponseRequired.StepId = 221;
-            ResponseRequired.StepName = "Response Required";
-            ResponseRequired.TargetAssembly = "TestLibrary.dll";
-            ResponseRequired.TargetType = "TestLibrary.TestRunner";
-            ResponseRequired.Payload = "5000|Sub Step 2.2.1";
-            ResponseRequired.Dependencies = new string[]
+            var responseRequired = new Step();
+            responseRequired.RunId = runId;
+            responseRequired.RunName = runName;
+            responseRequired.StepId = 221;
+            responseRequired.StepName = "Response Required";
+            responseRequired.TargetAssembly = "TestLibrary.dll";
+            responseRequired.TargetType = "TestLibrary.TestRunner";
+            responseRequired.Payload = "5000|Sub Step 2.2.1";
+            responseRequired.Dependencies = new string[]
             {
                 @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
                 @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
@@ -434,12 +434,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             getLetters.TransitionSteps = new Step[] { distributeProcessing };
             distributeProcessing.SubSteps = new Step[] { customers, nonCustomers, offline, noLetterRequired };
             distributeProcessing.TransitionSteps = new Step[] { publish };
+            nonCustomers.SubSteps = new Step[] { responseRequired, responseNotRequired };
 
             var runGetLetters = new RunStep(getLetters);
             var runDistributeProcessing = new RunStep(distributeProcessing);
             var runCustomers = new RunStep(customers);
             var runNonCustomers = new RunStep(nonCustomers);
-            var runResponseRequired = new RunStep(ResponseRequired);
+            var runResponseRequired = new RunStep(responseRequired);
             var runResponseNotRequired = new RunStep(responseNotRequired);
             var runOffline = new RunStep(offline);
             var runNoLetterRequired = new RunStep(noLetterRequired);
@@ -449,7 +450,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
 
             runNonCustomers.SubSteps.AddRange(new[] { runResponseRequired, runResponseNotRequired });
 
-            runDistributeProcessing.SubSteps.AddRange(new[] { runCustomers, runNonCustomers, runOffline });
+            runDistributeProcessing.SubSteps.AddRange(new[] { runCustomers, runNonCustomers, runOffline, runNoLetterRequired });
 
             runDistributeProcessing.TransitionSteps.Add(runPublish);
 

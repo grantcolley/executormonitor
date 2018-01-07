@@ -186,7 +186,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
                 var step = run.NotificationSteps.First(s=>s.StepId.Equals(stepNotification.StepId));
                 step.Status = stepNotification.Status;
-                step.Message = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.Message}";
+                step.Message = $"{stepNotification.Timestamp.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} {stepNotification.Status} {stepNotification.Message}";
 
                 var msg = new Message
                 {
