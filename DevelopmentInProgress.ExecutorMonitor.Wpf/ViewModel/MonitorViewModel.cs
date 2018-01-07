@@ -143,7 +143,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
                 return run.HasConnected;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 OnConnected(new Message { MessageType = MessageType.Error, Text = $"{DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt")} Failed to connect", Timestamp = DateTime.Now });
                 throw;

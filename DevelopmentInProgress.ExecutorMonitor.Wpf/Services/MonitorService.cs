@@ -14,10 +14,12 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             var ifrs9 = new Run { RunId = 101, RunName = "IFRS9", NotificationUrl = "http://localhost:5000" };
             var ifrs9Root = GetIfrs9(ifrs9.RunId, ifrs9.RunName);
             ifrs9.RunStep = ifrs9Root;
+            ifrs9.FlattenRootRunStep();
 
             var letterGeneration = new Run { RunId = 201, RunName = "Letter Generation", NotificationUrl = "http://localhost:5000" };
             var getLetters = GetLetters(letterGeneration.RunId, letterGeneration.RunName);
             letterGeneration.RunStep = getLetters;
+            letterGeneration.FlattenRootRunStep();
 
             var runs = new List<Run>() { ifrs9, letterGeneration};
             tcs.SetResult(runs);
