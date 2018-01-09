@@ -150,7 +150,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             }
         }
 
-        public async void ClearNotifications(object param)
+        public void ClearNotifications(object param)
         {
             var run = param as Run;
             Reset(run);
@@ -162,8 +162,13 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
             {
                 await Disconnect(run);
                 run.Notifications.Clear();
-                //TODO: clear RunStep messages
                 ClearMessages();
+
+                foreach (var step in run.NotificationSteps)
+                {
+                    step.Status = StepStatus.NotStarted;
+                    step.Message = string.Empty;
+                }
             }
         }
 

@@ -11,7 +11,7 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
         {
             var tcs = new TaskCompletionSource<List<Run>>();
 
-            var ifrs9 = new Run { RunId = 101, RunName = "IFRS9", NotificationUrl = "http://localhost:5000" };
+            var ifrs9 = new Run { RunId = 101, RunName = "IFRS9 Stress Testing", NotificationUrl = "http://localhost:5000" };
             var ifrs9Root = GetIfrs9(ifrs9.RunId, ifrs9.RunName);
             ifrs9.RunStep = ifrs9Root;
             ifrs9.FlattenRootRunStep();

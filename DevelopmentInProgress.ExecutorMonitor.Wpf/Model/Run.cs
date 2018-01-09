@@ -90,6 +90,11 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Model
                         IsMonitorEnabled = false;
                         IsExecuteRunEnabled = false;
                     }
+                    else
+                    {
+                        IsMonitorEnabled = true;
+                        IsExecuteRunEnabled = true;
+                    }
 
                     OnPropertyChanged("HasConnected");
                     OnPropertyChanged("HasNotConnected");
