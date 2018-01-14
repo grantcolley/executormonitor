@@ -152,15 +152,21 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.ViewModel
 
         public void ClearNotifications(object param)
         {
-            var run = param as Run;
-            Reset(run);
+            if (SelectedRun != null)
+            {
+                Reset(SelectedRun, false);
+            }
         }
 
-        private async void Reset(Run run)
+        private async void Reset(Run run, bool disconnect = true)
         {
             if (run != null)
             {
-                await Disconnect(run);
+                if (disconnect)
+                {
+                    await Disconnect(run);
+                }
+
                 run.Notifications.Clear();
                 ClearMessages();
 

@@ -21,7 +21,12 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             letterGeneration.RunStep = getLetters;
             letterGeneration.FlattenRootRunStep();
 
-            var runs = new List<Run>() { ifrs9, letterGeneration};
+            var taskProcessing = new Run { RunId = 301, RunName = "Task Processing", NotificationUrl = "http://localhost:5000" };
+            var getTaskProcessing = GetTaskProcessing(taskProcessing.RunId, taskProcessing.RunName);
+            taskProcessing.RunStep = getTaskProcessing;
+            taskProcessing.FlattenRootRunStep();
+
+            var runs = new List<Run>() { ifrs9, letterGeneration, taskProcessing };
             tcs.SetResult(runs);
             return tcs.Task;
         }
@@ -298,6 +303,75 @@ namespace DevelopmentInProgress.ExecutorMonitor.Wpf.Services
             runModelling.SubSteps.AddRange(new[] { runScenario1, runScenario2, runScenario3, runScenario4, runScenario5, runScenario6 });
             runModelling.TransitionSteps.Add(runReporting);
             return ifrs9Root;
+        }
+
+        private RunStep GetTaskProcessing(int runId, string runName)
+        {
+            var processTasks = new Step();
+            processTasks.RunId = runId;
+            processTasks.RunName = runName;
+            processTasks.StepId = 1;
+            processTasks.StepName = "Process Tasks";
+            processTasks.Urls = new[] { "http://localhost:5000" };
+            processTasks.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            var steps = new Step[20];
+            for (int i = 0; i <= 19; i++)
+            {
+                steps[i] = new Step();
+                steps[i].RunId = runId;
+                steps[i].RunName = runName;
+                steps[i].StepId = i + 2;
+                steps[i].StepName = $"Task {steps[i].StepId}";
+                steps[i].TargetAssembly = "TestLibrary.dll";
+                steps[i].TargetType = "TestLibrary.TestRunner";
+                steps[i].Payload = "1000|Hello";
+                steps[i].Dependencies = new string[]
+                {
+                    @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                    @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                    @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+                };
+            }
+            
+            var endProcessing = new Step();
+            endProcessing.RunId = runId;
+            endProcessing.RunName = runName;
+            endProcessing.StepId = 22;
+            endProcessing.StepName = "End Processing";
+            endProcessing.TargetAssembly = "TestLibrary.dll";
+            endProcessing.TargetType = "TestLibrary.TestRunner";
+            endProcessing.Payload = "1000|Hello";
+            endProcessing.Urls = new[] { "http://localhost:5000" };
+            endProcessing.Dependencies = new string[]
+            {
+                @"C:\GitHub\Binaries\Monitor\DipRunner.dll",
+                @"C:\GitHub\Binaries\Monitor\TestDependency.dll",
+                @"C:\GitHub\Binaries\Monitor\TestLibrary.dll"
+            };
+
+            processTasks.SubSteps = steps;
+            processTasks.TransitionSteps = new Step[] { endProcessing };
+
+            var runProcessTasks = new RunStep(processTasks);
+
+            var runSteps = new RunStep[20];
+            for (int i = 0; i <= 19; i++)
+            {
+                runSteps[i] = new RunStep(steps[i]);
+            }
+
+            var runEndProcessing = new RunStep(endProcessing);
+
+            runProcessTasks.SubSteps.AddRange(runSteps);
+            runProcessTasks.TransitionSteps.Add(runEndProcessing);
+
+            return runProcessTasks;
         }
 
         private RunStep GetLetters(int runId, string runName)

@@ -93,28 +93,30 @@
         </DataTemplate>
         
         <HierarchicalDataTemplate DataType="{x:Type model:RunStep}">
-            <StackPanel>
-                <ContentControl ToolTip="{Binding ToolTip}">
-                    <DockPanel LastChildFill="True">
-                        <Ellipse DockPanel.Dock="Left" Width="20" Height="20" Margin="2" StrokeThickness="3"
-                                 Fill="{Binding Status, Converter={StaticResource stepStatusFillColourConverter}}" 
-                                 Stroke="{Binding Status, Converter={StaticResource stepStatusStrokeColourConverter}}"
-                                 Visibility="{Binding Status, Converter={StaticResource stepStatusInactiveToVisibilityConverter}}"/>
-                        <Viewbox DockPanel.Dock="Left" Width="20" Height="20" Margin="2"
-                                 Visibility="{Binding Status, Converter={StaticResource stepStatusProgressToVisibilityConverter}}">
-                            <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"/>
-                        </Viewbox>
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Message}" Margin="2" VerticalAlignment="Center"/>
-                    </DockPanel>
-                </ContentControl>
-                <StackPanel Orientation="Horizontal">
-                    <ContentControl DockPanel.Dock="Left" Width="20"/>
-                    <ItemsControl ItemsSource="{Binding SubSteps}"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <ContentControl ToolTip="{Binding ToolTip}">
+                        <DockPanel LastChildFill="True">
+                            <Ellipse DockPanel.Dock="Left" Width="20" Height="20" Margin="2" StrokeThickness="3"
+                                     Fill="{Binding Status, Converter={StaticResource stepStatusFillColourConverter}}" 
+                                     Stroke="{Binding Status, Converter={StaticResource stepStatusStrokeColourConverter}}"
+                                     Visibility="{Binding Status, Converter={StaticResource stepStatusInactiveToVisibilityConverter}}"/>
+                            <Viewbox DockPanel.Dock="Left" Width="20" Height="20" Margin="2"
+                                     Visibility="{Binding Status, Converter={StaticResource stepStatusProgressToVisibilityConverter}}">
+                                <progress:CircularProgress Colour="{Binding Status, Converter={StaticResource stepStatusProgressColourConverter}}"/>
+                            </Viewbox>
+                            <TextBlock DockPanel.Dock="Left" Text="{Binding StepId}" Margin="2" VerticalAlignment="Center"/>
+                            <TextBlock DockPanel.Dock="Left" Text="{Binding StepName}" Margin="2" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Message}" Margin="2" VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </ContentControl>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl DockPanel.Dock="Left" Width="20"/>
+                        <ItemsControl ItemsSource="{Binding SubSteps}"/>
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding TransitionSteps}"/>
                 </StackPanel>
-                <ItemsControl ItemsSource="{Binding TransitionSteps}"/>
-            </StackPanel>
+            </ScrollViewer>
         </HierarchicalDataTemplate>
 
         <Style x:Key="RunGroupBox" TargetType="{x:Type GroupBox}">
